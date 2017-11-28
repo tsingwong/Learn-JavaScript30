@@ -60,16 +60,40 @@
     <audio data-key="76" src="sounds/tink.wav"></audio>
 
     <script>
-        document.addEventListener('keydown', (e) => {
+        /**
+         * @method 开始动画，播放声音
+         * @param {event} e 事件
+         */
+        function playSound(e) {
             let elementArr = document.querySelectorAll(`[data-key="${e.keyCode}"]`);
-            elementArr.length > 1 && (elementArr[0].className = 'key playing') && elementArr[1].play();
-        });
-        document.addEventListener('keyup', (e) => {
-            let elementArr = document.querySelectorAll(`[data-key="${e.keyCode}"]`);
-            elementArr.length > 1 && (elementArr[0].className = 'key');
-        });
-    </script>
+            if (elementArr.length > 1) {
+                // elementArr[0].className = 'key playing';
+                elementArr[0].classList.add('playing');
+                elementArr[1].currentTime = 0;
+                elementArr[1].play();
+            }
+        }
 
+        /**
+         * @method 停止动画
+         * @param {event} e 事件
+         */
+        function stopTransition(e) {
+            (e.propertyName === 'transform') && this.classList.remove('play');
+        }
+
+        // document.addEventListener('keyup', (e) => {
+        //     let elementArr = document.querySelectorAll(`[data-key="${e.keyCode}"]`);
+        //     elementArr.length > 1 && (elementArr[0].className = 'key');
+        // });
+
+        const keys = document.querySelectorAll('div.key');
+
+        keys.forEach(key => key.addEventListener('transitionend', stopTransition));
+
+        document.addEventListener('keydown', playSound);
+
+    </script>
 
 </body>
 
