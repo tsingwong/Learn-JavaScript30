@@ -54,7 +54,7 @@
             position: relative;
             width: 100%;
             height: 100%;
-            transform: rotate(90deg) translateY(-3px);
+            transform: translateY(-3px);
             /* account for the height of the clock hands */
         }
 
@@ -64,45 +64,78 @@
             background: black;
             position: absolute;
             top: 50%;
-            transform-origin: 100%;
-            transition: all 1s;
-            transition-timing-function: ease-in-out;
+            transform-origin: 100% 50%;
+            transition: all 0.05s;
+            transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
         }
 
     </style>
 
     <script>
-        const timer = new Date();
-        const timerArr = [timer.getHours(), timer.getMinutes(), timer.getSeconds()];
+        // const timer = new Date();
+        // const timerArr = [timer.getHours(), timer.getMinutes(), timer.getSeconds()];
         const hands = document.querySelectorAll('.hand');
 
-        hands.forEach((hand, index) => {
-            hand.style.transform = 'rotate(0deg)';
-            // 触发重绘
-            hand.offsetWidth;
-            hand.style.transform = index === 0
-                ? `rotate(${timerArr[index] / 12 * 360}deg)`
-                : `rotate(${timerArr[index] / 60 * 360}deg)`;
-        });
+        // hands.forEach((hand, index) => {
+        //     hand.style.transform = 'rotate(0deg)';
+        //     // 触发重绘
+        //     hand.offsetWidth;
+        //     hand.style.transform = index === 0
+        //         ? `rotate(${timerArr[index] / 12 * 360}deg)`
+        //         : `rotate(${timerArr[index] / 60 * 360}deg)`;
+        // });
 
 
-        hands[2].addEventListener('transitionend', () => {
-            let newSecondDeg = +/(\d+)/.exec(hands[2].style.transform)[1] + 6;
-            let newMinutesDeg = +/(\d+)/.exec(hands[1].style.transform)[1] + 6;
-            let newHoursDeg = +/(\d+)/.exec(hands[0].style.transform)[1] + 30;
+        // hands[2].addEventListener('transitionend', () => {
+        //     let newSecondDeg = +/(\d+)/.exec(hands[2].style.transform)[1] + 6;
+        //     let newMinutesDeg = +/(\d+)/.exec(hands[1].style.transform)[1] + 6;
+        //     let newHoursDeg = +/(\d+)/.exec(hands[0].style.transform)[1] + 30;
 
-            if (!(newSecondDeg % 360)) {
-                if (!(newMinutesDeg % 360)) {
-                    hands[0].style.transform =
-                    hands[0].style.transform.replace(/\d+/, newHoursDeg);
-                }
-                
-                hands[1].style.transform =
-                    hands[1].style.transform.replace(/\d+/, newMinutesDeg);
-            }
-            hands[2].style.transform =
-                hands[2].style.transform.replace(/\d+/, newSecondDeg);
-        });
+        //     if (!(newSecondDeg % 360)) {
+        //         if (!(newMinutesDeg % 360)) {
+        //             hands[0].style.transform =
+        //             hands[0].style.transform.replace(/\d+/, newHoursDeg);
+        //         }
+
+        //         hands[1].style.transform =
+        //             hands[1].style.transform.replace(/\d+/, newMinutesDeg);
+        //     }
+        //     hands[2].style.transform =
+        //         hands[2].style.transform.replace(/\d+/, newSecondDeg);
+        // });
+
+
+        let secondDeg, minuteDeg, hourDeg, DegArr;
+
+        function initTimer() {
+            const timer = new Date();
+            const second = timer.getSeconds();
+            secondDeg = 90 + (second / 60 * 360);
+            const minutes = timer.getMinutes();
+            minuteDeg = 90 + (minutes / 60 * 360) + (second / 60 / 60 * 360);
+            const hours = timer.getHours();
+            hourDeg = 90 + (hours / 12 * 360) + (second / 60 / 60 / 12 * 360) + (minutes / 60 / 12 * 360);
+
+            DegArr = [hourDeg, minuteDeg, secondDeg];
+
+            hands.forEach((hand, index) => {
+                hand.style.transform = `rotate(${DegArr[index]}deg)`;
+            });
+        }
+
+        function changeHand() {
+            secondDeg += (1 / 60 * 360);
+            minuteDeg += (1 / 60 / 60 * 360);
+            hourDeg += (1 / 60 / 60 / 12 * 360);
+
+            DegArr = [hourDeg, minuteDeg, secondDeg];
+            hands.forEach((hand, index) => {
+                hand.style.transform = `rotate(${DegArr[index]}deg)`;
+            });
+        }
+
+        initTimer();
+        setInterval(changeHand, 1000);
 
     </script>
 </body>
