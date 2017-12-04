@@ -176,5 +176,110 @@ const bArr = new Array(3);
 console.log(bArr.pop()); // undefined
 console.log(bArr); // [, ,]
 ```
+- `Array.prototype.push(items)`：该方法用于将一个或多个元素添加到当前数组末尾，并返回修改后数组的长度。常与 `call()` 或 `apply()` 配合使用，应用于类数组对象上。
 
+注：唯一的原生类数组（array-like）对象是 `Strings`，尽管如此，它们并不适用该方法，因为字符串是不可改变的。
 
+```js
+const aArr = [0, 1, 2];
+const total = aArr.push(3, 4); // 5
+console.log(aArr); // [0, 1, 2, 3, 4]
+
+const bArr = [6, 7, 8, 9];
+Array.prototype.push.apply(aArr, bArr); // 9
+console.log(aArr); // [0, 1, 2, 3, 4, 6, 7, 8, 9]
+
+const aObj = {
+    add (elem) {
+        Array.prototype.push.call(this, elem);
+    }
+};
+const bObj = {
+    name: 'tsingwong'
+};
+
+aObj.add(bObj);
+console.log(aObj[0]); // {name: 'tsingwong'}
+bObj.age = 25;
+console.log(aObj[0]); // {name: 'tsingwong', age: 25}
+```
+
+- `Array.prototype.reverse()`：该方法用于将数组中的元素位置颠倒，返回修改后的数组。即第一个数组元素与最后一个数组元素交换位置，然后依次进行。
+
+```js
+const arr = [0, 1, 2];
+const result = arr.reverse();
+
+console.log(arr); // [2, 1, 0]
+console.log(arr === result); // true
+```
+
+- `Array.prototype.shift()`：该方法用于从数组中删除第一个元素，并返回该元素的值。此方法会改变数组的长度。如果数组为空，则返回 `undefined`。
+
+```js
+const arr = [0, 1, 2];
+const result = arr.shift(); // 2
+console.log(arr); // [0, 1]
+```
+
+- `Array.prototype.sort(compareFn)`：该方法用于在适当的位置对数组的元素进行排序，并返回修改后的数组。默认排序顺序是根据字符串 `Unicode` 码。
+
+在没有指定 `compareFn` 时，会按照 **转换为字符串** 后逐个字符的 `Unicode` 码排序。如 `[1, 2, 10, 20].sort() => [1, 10, 2, 20]`，因为'10' 比 '2' 靠前。
+
+在指定了 `compareFn` 时，会按照调用该函数的返回值排序。即 a 和 b 是将要比较的元素:
+
+    - 如果 `compareFn(a, b)` 返回结果大于 0，则 a、b 交换位置；
+    - 如果 `compareFn(a, b)` 返回结果等于 0，则 a、b 相对位置不变；
+    - 如果 `compareFn(a, b)` 返回结果小于 0，则 a、b 不会交换位置；
+    - 注： `compareFn(a, b)` **必须** 总是对相同的输入返回相同的结果，否则排序的结果是不确定的。
+
+标准的 `compareFn`可以如下：
+
+```
+function compare (a, b) {
+    if (a is less than b) {
+        return -1;
+    } else if (a is more than b) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+```
+
+如果比较的数字而非字符串，比较函数可以使用简单的 `a-b`：
+
+```js
+const arr = [2,13,5,67,0,3,-3];
+// 升序
+const ascendOrder = arr.sort((a, b) => a - b);
+// 降序
+const descendOrder = arr.sort((a, b) => b -a);
+console.log(arr === ascendOrder); // true
+// 引用类型都是对于地址的引用
+console.log(ascendOrder === descendOrder); // true
+```
+
+下面来看一个我犯过的错误：
+
+```js
+const people = ['Beck, Glenn', 'Becker, Carl', 'Beckett, Samuel', 'Beddoes, Mick', 'Beecher, Henry','Beethoven, Ludwig', 'Begin, Menachem', 'Belloc, Hilaire', 'Bellow, Saul', 'Benchley, Robert','Biko, Steve', 'Billings, Josh', 'Biondo, Frank', 'Birrell, Augustine', 'Black, Elk', 'Blair, Robert','Blair, Tony', 'Blake, William'];
+
+people.sort((a, b)=> a > b);
+
+console.log(people); // ["Benchley, Robert", "Beck, Glenn", "Biko, Steve", "Beckett, Samuel", "Becker, Carl", "Billings, Josh", "Beethoven, Ludwig", "Beddoes, Mick", "Beecher, Henry", "Begin, Menachem", "Belloc, Hilaire", "Bellow, Saul", "Biondo, Frank", "Birrell, Augustine", "Black, Elk", "Blair, Robert", "Blair, Tony", "Blake, William"]
+```
+
+`compareFn` 中我原意是根据 `a > b` 的结果来决定其顺序，但是我疏忽了 `a > b` 的结果只可能是 `true | false`， 而该两个值转换为 `Number` 时是 `1 | 0`，所以会出现不符合与其的结果。
+
+```js
+const people = ['Beck, Glenn', 'Becker, Carl', 'Beckett, Samuel', 'Beddoes, Mick', 'Beecher, Henry','Beethoven, Ludwig', 'Begin, Menachem', 'Belloc, Hilaire', 'Bellow, Saul', 'Benchley, Robert','Biko, Steve', 'Billings, Josh', 'Biondo, Frank', 'Birrell, Augustine', 'Black, Elk', 'Blair, Robert','Blair, Tony', 'Blake, William'];
+
+people.sort((a, b)=> a > b ? 1 : -1);
+
+console.log(people); // ["Beck, Glenn", "Becker, Carl", "Beckett, Samuel", "Beddoes, Mick", "Beecher, Henry", "Beethoven, Ludwig", "Begin, Menachem", "Belloc, Hilaire", "Bellow, Saul", "Benchley, Robert", "Biko, Steve", "Billings, Josh", "Biondo, Frank", "Birrell, Augustine", "Black, Elk", "Blair, Robert", "Blair, Tony", "Blake, William"]
+```
+
+这样就正确了。另外在研究过程中，发现 `Array.prototype.sort()` 在数组长度 10 以下与 10 以上用的不同算法。
+
+这些明天再来补充吧~~~
