@@ -134,6 +134,8 @@ console.log(arr); // [1, empty * 3]
 
 **Mutator Function**
 
+使用下面方法会改变调用对象本身。
+
 - `Array.prototype.copyWithin(targe[, start[, end]])`：该方法多用于 **浅复制** 数组的一部分到同一个数组的另一个位置，并返回修改后的数组，该方法无法修改长度。简单解释下，第一个参数时要被覆盖的位置，第二个参数为覆盖前者的开始位置，第三个参数为覆盖前面的结束位置。第二参数默认为 0，第三个参数默认为 `this.length`。
 
 注：该方法不能修改数组长度，也就是说如果第一个参数或第二个参数大于 数组长度 - 1，便会返回原数组。其拷贝是浅拷贝，也就是说除基本类型（undefined, null, number, boolean, string 和 Symbol）之外，引用类型都是引用的地址，一个改变其余也会改变。
@@ -335,3 +337,50 @@ Array.prototype.unshift.apply(arr, addArr); // 8
 console.log(arr); // [-2, -1, 0, 1, 2, 3, 4, 5]
 ```
 
+**Iteration Function**
+
+下面的方法使用 **绝对** 不会改变调用他们的对象，只会返回一个新数组或其他期望值。
+
+- `Array.prototype.concat(...arguments)`：用户合并多个数组，返回一个合并后的新数组。同样它也是执行的浅拷贝，也就是说引用类型和基本数据类型的拷贝后表现仍然不同。
+
+```js
+const arr1 = [-1, [0, 1]];
+const arr2 = [3, 4];
+
+const arrs = arr1.concat(2, arr2);
+
+console.log(arrs); // [-1, [0, 1], 2, 3, 4]
+
+arr1[1].push(1.5);
+
+console.log(arrs); // [-1, [0, 1, 1.5], 2, 3, 4]
+```
+
+- `Array.prototype.includes(searchElement[, fromIndex])`：该方法用于判断一个数组中是否包含指定值，返回布尔值。`searchElement` 表示需要查找元素的值。`fromIndex` 表示从该索引处开始查找 `searchElement`，可以为负值，默认是 0，当 `fromIndex` 大于 `arr.length` 时，直接回返回 `false`，当 `fromIndex` 为负数时，如果 `fromIndex + arr.length` >= 0 时，按照其位置开始，否则整个数组都会被搜索。同样也可以使用 `call()` 或 `apply()` 作用于非数组对象上。
+
+```js
+const arr = [0, 1, 2, 3];
+console.log(arr.includes(2)); // true
+console.log(arr.includes(4)); // false
+
+console.log(arr.includes(2, 3)); // false
+
+const anotherArr = [{name: 'tsingwong'}, [1, 2], '哈哈'];
+console.log(anotherArr.includes({name: 'tsingwong'})); // false
+console.log(anotherArr.includes([1, 2])); // false
+console.log(anotherArr.includes('哈哈')); // true
+
+const obj = {age: 25};
+anotherArr.push(obj);
+
+console.log(anotherArr.includes(obj)); // true
+
+(function (){
+    console.log(Array.prototype.includes.call(arguments, 'a')); // true
+    console.log(Array.prototype.includes.call(arguments, 'd')); // false
+}('a', 'b', 'c'));
+```
+
+- `Array.prototype.join(separator)`：该方法用于将数组中的所有元素连接到一个字符串中。`separator` 是指定用于分隔数组元素的字符串，默认值为 `','`，如果设置为空字符串 `''`，则所有的元素之间都没有任何字符串。
+
+注：数组中所有元素会先被转换成字符串（调用 `toString()`），然后再使用分隔符连接起来。
