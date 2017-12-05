@@ -222,7 +222,7 @@ const result = arr.shift(); // 2
 console.log(arr); // [0, 1]
 ```
 
-- `Array.prototype.sort(compareFn)`：该方法用于在适当的位置对数组的元素进行排序，并返回修改后的数组。默认排序顺序是根据字符串 `Unicode` 码。
+- `Array.prototype.sort(compareFn)`：该方法用于在适当的位置对数组的元素进行排序，并返回修改后的数组。默认排序顺序是根据字符串 `Unicode` 码。注：该方法在不同的浏览器内实现是不同的，所以该方法的排序 **不一定是稳定** 的。
 
 在没有指定 `compareFn` 时，会按照 **转换为字符串** 后逐个字符的 `Unicode` 码排序。如 `[1, 2, 10, 20].sort() => [1, 10, 2, 20]`，因为'10' 比 '2' 靠前。
 
@@ -282,4 +282,56 @@ console.log(people); // ["Beck, Glenn", "Becker, Carl", "Beckett, Samuel", "Bedd
 
 这样就正确了。另外在研究过程中，发现 `Array.prototype.sort()` 在数组长度 10 以下与 10 以上用的不同算法。
 
-这些明天再来补充吧~~~
+这些明天再来补充吧~~~ 哇我发现这个地方要深挖能写很多，对于初级前端的我太高深了，还是过几天整理下思路在写哈。嘿嘿~~~
+
+- `Array.prototype.splice(start[, deleteCount[, ...items]])`：该方法用于删除现有元素和添加新元素来改变数组的内容，返回由被删除元素组成的数组。`start` 如果超过了数组长度，即从数组末尾开始接下来的操作。`deleteCount`必须是整数，表示要移除的元素个数。如果是0，为不移除元素。如果 `deleteCount` 大于 `start` 之后元素的总和，则移除从 `start` 起到最后的元素。默认值为`arr.length - start` 同前一个表现。后面为参数列表，即要添加进数组的元素，从 `start` 位置开始，按照后面的顺序不变得插入到数组中。如果不指定，则该方法只删除数组元素。
+
+
+```js
+const arr = [0 ,1 ,2 ,3, 4, 5];
+
+let removed = arr.splice(); // []
+
+console.log(arr); // [0 ,1 ,2 ,3, 4, 5]
+
+removed = arr.splice(5, 1); // [5]
+
+console.log(arr); // [0, 1 ,2 ,3, 4]
+
+removed = arr.splice(3, 10); // [3, 4]
+
+console.log(arr); // [0, 1, 2]
+
+removed = arr.splice(0, 0 ,-2, -1); // []
+
+console.log(arr); // [-2, -1, 0, 1, 2]
+
+removed = arr.splice(1); // [-1, 0, 1, 2]
+
+console.log(arr); // [-2]
+```
+
+- `Array.prototype.unshift(...items)`：该方法用于将一个或多个数组添加到数组的开头，并返回修改后数组的长度。该方法同样可以 `call()` 或 `apply()` 方法作用于类似数组对象上。
+
+```js
+const arr = [3, 4, 5];
+
+let result = arr.unshift(); // 3
+
+console.log(arr); // [3, 4, 5]
+
+result = arr.unshift(2); // 4
+
+console.log(arr); // [2, 3, 4, 5]
+
+result = arr.unshift(0, 1); // 6
+
+console.log(arr); // [0, 1, 2, 3, 4, 5]
+
+const addArr = [-2, -1];
+
+Array.prototype.unshift.apply(arr, addArr); // 8
+
+console.log(arr); // [-2, -1, 0, 1, 2, 3, 4, 5]
+```
+
