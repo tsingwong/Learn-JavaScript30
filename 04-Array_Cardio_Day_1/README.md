@@ -124,13 +124,7 @@ console.log(arr); // [1, empty * 3]
 
 ##### 数组原型的方法
 
-其下面的方法可以大致分为几类：
-
-- 改变自身值，MDN 上取名叫做 `Mutator Function`
-- 不会改变自身值，只会返回一个新数组或其他期望结果， MDN 上取名叫做 `Accessor Function`
-- 还有一些遍历方法，多数是指定回调函数作为参数，返回新数组或其他预期结果，MDN 上取名叫做 `Iteration Function`。
-
-注：在遍历方法中，每个数组元素都分别执行完回调函数之前，数组的 length 属性会被缓存到内存中，所以如果在回调函数中，增加元素则新增元素不会被遍历。如果删除或改变某个元素可能会带来未知影响。所以，**尽可能不要再遍历过程中对原数组进行任何修改操作**。
+注：
 
 **Mutator Function**
 
@@ -337,7 +331,7 @@ Array.prototype.unshift.apply(arr, addArr); // 8
 console.log(arr); // [-2, -1, 0, 1, 2, 3, 4, 5]
 ```
 
-**Iteration Function**
+**Accessor Function**
 
 下面的方法使用 **绝对** 不会改变调用他们的对象，只会返回一个新数组或其他期望值。
 
@@ -473,3 +467,269 @@ arr.lastIndexOf(Symbol('5')); //-1
 arr.lastIndexOf(symbol); // 6
 arr.lastIndexOf('2'); // 7
 ```
+
+**Iteration Function**
+
+还有一些遍历方法，多数是指定回调函数作为参数，返回新数组或其他预期结果。
+
+在遍历方法中，每个数组元素都分别执行完回调函数之前，数组的 length 属性会被缓存到内存中，所以如果在回调函数中，增加元素则新增元素不会被遍历。如果删除或改变某个元素可能会带来未知影响。所以，**尽可能不要再遍历过程中对原数组进行任何修改操作**。
+
+- `Array.prototype.forEach(callbackfn(currentValue, index, array)[, thisArg])`：该方法用于对数组的每个元素执行一次提供的回调函数，无返回结果即返回 `undefined`。`callbackfn` 是为数组中每个元素执行的函数。`currentValue` 是数组中正在处理的当前元素，`index` 是数组中正在处理的当前元素的索引，`array`是当前正在操作的数组，`thisArg` 表示执行回调函数时指定的`this`值。
+
+注：`forEach()` 为每个数组元素执行callback函数；不像 `map()` 或者 `reduce()` ，它总是返回 `undefined` 值，并且不可链式调用。典型用例是在一个链的最后执行副作用。
+
+```js
+const arr = [0, 1, 2, 3, 4];
+
+arr.forEach((val, index, arr) => {
+    console.log(`arr[${index}] = ${val}`);
+});
+
+const obj = {
+    total: 0
+};
+
+arr.forEach((val, index, arr) => {
+    console.log(this.total); // undefined， 由于是箭头函数的关系，所以指定 this 依然无效。
+    this.total += val; // NaN
+    console.log(`arr[${index}] = ${val}, total = ${this.total}`);
+}, obj); 
+
+
+arr.forEach(function (val, index, arr){
+    console.log(this.total); // 0
+    this.total += val; // 0
+    console.log(`arr[${index}] = ${val}, total = ${this.total}`);
+}, obj); 
+
+//  下面是一个对象浅拷贝函数
+function copyObj (obj) {
+    // 返回指定对象的原型（内部[[Prototype]]属性的值）
+    const copy = Object.create(Object.getPrototypeOf(obj));
+    // 返回一个由指定对象的所有自身属性的属性名（包括不可枚举属性但不包括Symbol值作为名称的属性）组成的数组。
+    const propNames = Object.getOwnPropertyNames(obj);
+
+    propNames.forEach((name) => {
+        // 返回指定对象上一个自有属性对应的属性描述符。（自有属性指的是直接赋予该对象的属性，不需要从原型链上进行查找的属性）
+        const desc = Object.getOwnPropertyDescriptor(obj, name);
+        // 会直接在一个对象上定义一个新属性，或者修改一个对象的现有属性， 并返回这个对象。
+        Object.defineProperty(copy, name, desc);
+    });
+    
+    return copy;
+}
+
+const obj1 = {name: 'tsingwong', age: '25'};
+const obj2 = copyObj(obj1);
+obj1.arr = [0, 1, 2, 3];
+
+const obj3 = copyObj(obj1);
+obj1.arr.push(4);
+console.log(obj3); // [0, 1, 2, 3, 4]
+```
+
+- `Array.prototype.entries()`：该方法返回一个新的 `Array Iterator` 迭代器对象，该对象中包含数组中的每个索引的键值对。
+
+```js
+const arr = ['a' , 'b', 'c'];
+const iterator = arr.entries();
+
+console.log(iterator);
+
+console.log(iterator.next().value,; // [0, "a"]， 此时的 itertor.next().done = false
+console.log(iterator.next().value); // [1, "b"]
+console.log(iterator.next().value); // [2, "c"]
+console.log(iterator.next().value); // undefined， 此时的 itertor.next().done = true
+
+const arrNew = ['a' , 'b', 'c'];
+const iteratorNew = arr.entries();
+
+// 这里提一下， for ... of 在可迭代对象上，创建一个迭代循环
+for (let e of iteratorNew) {
+    console.log(e);
+}
+// [0, "a"] 
+// [1, "b"] 
+// [2, "c"]
+```
+
+- `Array.prototype.every(callbackfn(currentValue, index, array)[, thisArg])`：该方法用于测试数组的所有元素是否都通过了指定函数的测试，如果所有元素都通过了，返回 `true`，反之，只要有不通过的就返回 `false`。其参数同上面的 `forEach()` 方法。
+
+注：`callbackfn` 的执行次数是由第 `callbackfn()` 方法的返回值决定的，如果找到这样一个使 `callbackfn()` 返回一个“假值”，那么 `every()` 方法会立即返回 `false`。
+
+```js
+const arr = [10, 20, 90, 50];
+
+let result = arr.every((val, index, array) => {
+    console.log(index); // 0 1 2 3
+    return !(val % 10);
+}); // true
+
+const obj = {number: 3};
+
+result = arr.every(function (val, index, array) {
+    console.log(index); // 0
+    return (val / 10) > this.number;
+}, obj); // false
+```
+
+- `Array.prototype.some(callbackfn(currentValue, index, array)[, thisArg])`：该方法用于测试数组中的某些元素是否通过由提供的函数实现，如果没有任何通过，返回 `false`，反之，有一个通过即返回 `true`。其参数同上面的 `forEach()` 方法。
+
+注：`callbackfn` 的执行次数是由第 `callbackfn()` 方法的返回值决定的，如果找到这样一个使 `callbackfn()` 返回一个“真值”，那么 `some()` 方法会立即返回 `true`。
+
+
+```js
+const arr = [10, 20, 90, 50];
+
+let result = arr.some((val, index, array) => {
+    console.log(index); // 0
+    return !(val % 10);
+}); // true
+
+const obj = {number: 3};
+
+result = arr.some(function (val, index, array) {
+    console.log(index); // 0 1 2
+    return (val / 10) > this.number;
+}, obj); // true
+```
+
+- `Array.prototype.filter(callbackfn(currentValue, index, array)[, thisArg])`：该方法用于创建一个新数组，其中包含 `callbackfn()` 回调函数返回为 `true` 的所有元素。其参数同上面的 `forEach()` 方法。
+
+```js
+const arr = [10, 20, 90, 50];
+
+let result = arr.filter((val, index, array) => {
+    console.log(index); // 0 1 2 3
+    return !(val % 10);
+}); 
+console.log(result); // [10, 20, 90, 50]
+
+const obj = {number: 3};
+
+result = arr.filter(function (val, index, array) {
+    console.log(index); // 0 1 2 3
+    return (val / 10) > this.number;
+}, obj);
+console.log(result); // [90. 50]
+```
+
+- `Array.prototype.find(predicate(currentValue, index, array)[, thisArg])`：该方法用于返回数组中 `predicate()` 回调函数返回为 `true` 的 **第一个值**，否则返回 `undefined`。其参数同上面的 `forEach()` 方法。
+
+```js
+const arr = [10, 20, 90, 50];
+
+let result = arr.find((val, index, array) => {
+    console.log(index); // 0
+    return !(val % 10);
+}); // 10
+
+const obj = {number: 3};
+
+result = arr.find(function (val, index, array) {
+    console.log(index); // 0 1 2
+    return (val / 10) > this.number;
+}, obj); // 90
+
+
+// 下面为寻找数组中的质数
+
+function isPrime(val, index, array) {
+    let start = 2;
+    while (start <= Math.sqrt(val)) {
+        if (val % start++ < 1) {
+            return false;
+        }
+    }
+    return val > 1;
+}
+
+console.log([4, 6, 8, 12].find(isPrime)); // undefined
+console.log([4, 5, 8, 12].find(isPrime)); // 5
+```
+
+- `Array.prototype.findIndex(predicate(currentValue, index, array)[, thisArg])`：该方法用于返回数组中 `predicate()` 回调函数返回为 `true` 的 **第一个键名**，否则返回 `-1`。其参数同上面的 `forEach()` 方法。
+
+```js
+const arr = [10, 20, 90, 50];
+
+let result = arr.findIndex((val, index, array) => {
+    console.log(index); // 0
+    return !(val % 10);
+}); // 0
+
+const obj = {number: 3};
+
+result = arr.findIndex(function (val, index, array) {
+    console.log(index); // 0 1 2
+    return (val / 10) > this.number;
+}, obj); // 2
+```
+
+- `Array.prototype.keys()`：该方法返回一个新的 `Array Iterator` 迭代器对象，其中包含数组中的每个键值。
+
+```js
+const arr = ['a' , 'b', 'c'];
+const iterator = arr.keys();
+
+console.log(iterator);
+
+console.log(iterator.next().value,; // 0， 此时的 itertor.next().done = false
+console.log(iterator.next().value); // 1
+console.log(iterator.next().value); // 2
+console.log(iterator.next().value); // undefined， 此时的 itertor.next().done = true
+
+const arrNew = ['a' , 'b', 'c'];
+const iteratorNew = arr.keys();
+
+// 这里提一下， for ... of 在可迭代对象上，创建一个迭代循环
+for (let e of iteratorNew) {
+    console.log(e);
+}
+// 0
+// 1 
+// 2
+```
+
+- `Array.prototype.map(callbackfn[ ,thisArg])`：该方法创建一个新数组，其内容是原数组中的每个元素执行 `callbackfn()` 回调函数的返回结果，最后返回新建的数组。
+
+`map()` 方法常用于格式化数组中的对象，同样可以使用 `call()` 或 `apply()` 方法作用于类数组对象上。
+
+
+```js
+const arr = [1, 2, 3];
+let result = arr.map((val) => Math.sqrt(val));
+
+console.log(result); // [1, 4, 9]
+
+const kvArr = [
+    {key: 1, value: 10}, 
+    {key: 2, value: 20}, 
+    {key: 3, value: 30}
+];
+
+result = kvArr.map((obj) => {
+    const tempObj = {};
+    tempObj[obj.key] = obj.value;
+    return tempObj;
+});
+
+console.log(result); // [{1: 10}, {2: 20}, {3: 30}]
+
+result = Array.prototype.map.call('Tsing Wong', (val) => val.charCodeAt(0));
+
+console.log(result); // [84, 115, 105, 110, 103, 32, 87, 111, 110, 103]
+
+// 下面是一个错误的案例：
+["1", "2", "3"].map(parseInt); // [1, NaN, NaN]
+// 是这样的 map 的回调函数中有三个参数 currentValue Index Array
+// 相应的 parseInt 方法需要两个参数 string radix
+// 所以第一次执行时也就是 parseInt('1', 0)
+// 第二次执行时 parseInt('2', 1)
+// 第三次执行时 parseInt('3', 2)
+
+['1', '2', '3'].map( str => parseInt(str, 10)) ; // [1, 2, 3]
+
+'1', '2', '3'].map(Number); // [1, 2, 3]
+```
+
