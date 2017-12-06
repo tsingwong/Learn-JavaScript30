@@ -383,4 +383,93 @@ console.log(anotherArr.includes(obj)); // true
 
 - `Array.prototype.join(separator)`：该方法用于将数组中的所有元素连接到一个字符串中。`separator` 是指定用于分隔数组元素的字符串，默认值为 `','`，如果设置为空字符串 `''`，则所有的元素之间都没有任何字符串。
 
-注：数组中所有元素会先被转换成字符串（调用 `toString()`），然后再使用分隔符连接起来。
+注：数组中所有元素会先被转换成字符串（调用 `toString()`），然后再使用分隔符连接起来。如果元素是undefined 或者null， 则会转化成空字符串。
+
+```js
+const arr = [undefined, 1, '2', [3, 4], null, {name: 'tsingwong'}];
+
+const result = arr.join(); 
+
+console.log(result); // ",1,2,3,4,,[object Object]"
+```
+
+- `Array.prototype.slice(start, end)`：该方法用于将`start` 到 `end` 位置内的元素浅拷贝到一个新数组对象中，注意区间为前开后闭。`start` 参数默认为 0，负数表示 `arr.length + start` 的位置。`end` 参数默认或大于数组长度时，方法会浅拷贝到数组末尾，否则就是前开后闭的区间。
+
+注： 如果向两个数组任一中添加了新元素，则另一个不会受到影响。
+
+```js
+const arr = [false, 1, '2', [3, 4], {name: 'tsingwong'}];
+
+const result = arr.slice(1);
+
+console.log(result); // [1, "2", [3, 4], {name: "tsingwong"}]
+
+arr[3].push(5); 
+
+console.log(result); // [1, "2", [3, 4, 5], {name: "tsingwong"}]
+
+arr.shift(); // false
+
+console.log(result); // [1, "2", [3, 4, 5], {name: "tsingwong"}]
+```
+
+- `Array.prototype.toString()`：该方法返回一个字符串，表示指定的数组及其元素。`Array` 对象覆盖了 `Object` 对象上的 `toString()` 方法。数组对象中 `toString()` 方法可以理解成将数组中每个元素的 `toString()` 返回值经过调用 `join()` 方法连接成由逗号隔开的字符串。
+
+注： 当数组被作为文本值或进行字符串操作时，会默认调用 `toString()` 方法。
+
+```js
+const symbol = Symbol('5');
+const arr = [false, 1, '2', [3, 4], {name: 'tsingwong'}, symbol];
+
+// Uncaught TypeError: Cannot convert a Symbol value to a string
+// Symbol值不能与其他类型的值进行运算。
+console.log(arr.toString()); 
+
+arr.pop(); // Symbol(5)
+
+console.log(arr.toString()); // false,1,2,3,4,[object Object]
+
+console.log(arr.join()); // false,1,2,3,4,[object Object]
+```
+
+- `Array.prototype.toLocaleString([reserved1[, reserved2]])`：该方法会返回一个字符串表示数组中的元素，数组中元素将使用各自的 `toLocaleString()` 方法转换成字符串。
+
+```js
+const number = 1337;
+const date = new Date();
+const arr = [number, date, 123, {name: 'tsingwong'}];
+
+console.log(arr.toLocaleString()); // 1,337,12/6/2017, 4:48:08 PM,123,[object Object]
+```
+
+- `Array.prototype.indexOf(searchElement[, fromIndex])`：该方法用于在数组中查找 `searchElement` 元素，并返回查找到的 **第一个索引**，如果不存在就返回 -1。`fromIndex` 参数表示开始查找的位置，默认是 0。
+
+```js
+const symbol = Symbol('5');
+const obj = {name: 'tsingwong'};
+const arr = [false, 1, '2', [3, 4], obj, {age: 25}, symbol];
+
+arr.indexOf(false); // 0
+arr.indexOf(1, 3); // -1
+arr.indexOf({name: 'tsingwong'}); // -1
+arr.indexOf(obj); // 4
+arr.indexOf(Symbol('5')); //-1
+arr.indexOf(symbol); // 6
+arr.indexOf('2'); // 3
+```
+
+- `Array.prototype.lastIndexOf(searchElement[, fromIndex = arr.length - 1])`：该方法用于在数组中查找 `searchElement` 元素，并返回查找到的 **最后一个索引**，如果不存在就返回 -1，该方法与`indexOf()` 的不同在于，它是从后向前查找。`fromIndex` 参数表示开始查找的位置，默认是 `arr.length - 1`。
+
+```js
+const symbol = Symbol('5');
+const obj = {name: 'tsingwong'};
+const arr = [false, 1, '2', [3, 4], obj, {age: 25}, symbol,'2'];
+
+arr.lastIndexOf(false); // 0
+arr.lastIndexOf(1, 3); // 1
+arr.lastIndexOf({name: 'tsingwong'}); // -1
+arr.lastIndexOf(obj); // 4
+arr.lastIndexOf(Symbol('5')); //-1
+arr.lastIndexOf(symbol); // 6
+arr.lastIndexOf('2'); // 7
+```
