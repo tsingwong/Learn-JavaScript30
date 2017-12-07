@@ -733,3 +733,81 @@ console.log(result); // [84, 115, 105, 110, 103, 32, 87, 111, 110, 103]
 '1', '2', '3'].map(Number); // [1, 2, 3]
 ```
 
+- `Array.prototype.reduce(callbackfn(accumulator, currentValue, currentIndex, array)[, initValue])`：该方法用于对累加器和数组中的每个元素（从左到右）应用一个函数，将其减少为单个值。`accumulator` 参数表示累加器累加回调的返回值，他是上一次调用回调是返回的累加值，如果设置了 `initValue` 参数，则首次调用回调时该值为 `initValue`。`initialValue`参数作为第一次调用 `callbackfn()` 的第一个参数值。如果没有提供初始值，则将使用数组中的第一个元素。
+
+```js
+const arr = [
+    {
+        x: 123
+    },
+    {
+        x: 456
+    }
+];
+
+let result = arr.reduce((pre, cur, val, arr) => {
+    return Math.max(pre.x, cur.x);
+}); 
+
+console.log(result); // 456
+
+result = arr.reduce((pre, cur, val, arr) => {
+    return pre + cur. x;
+}, 0);
+
+console.log(result); // 579
+
+// 下面为计算数组中每个元素出线的次数
+
+const names = ['Alice', 'Bob', 'Tiff', 'Bruce', 'Alice'];
+const countName = names.reduce((pre, cur, val, arr) => {
+    cur in pre ? pre[cur]++ : (pre[cur] = 1);
+    return pre;
+}, {});
+
+console.log(countName); // {Alice: 2, Bob: 1, Tiff: 1, Bruce: 1}
+```
+
+- `Array.prototype.reduceRight(callbackfn(accumulator, currentValue, currentIndex, array)[, initValue])`: 该方法用于对累加器和数组中的每个元素（从右到左）应用一个函数，将其减少为单个值。参数同 `reduce()` 方法。
+
+
+
+- `Array.prototype.values()`：该方法返回一个新的 `Array Iterator` 迭代器对象，该对象中包含数组中的每个索引的值。
+
+```js
+const arr = ['a' , 'b', 'c'];
+const iterator = arr.values();
+
+console.log(iterator);
+
+console.log(iterator.next().value,; // 'a'， 此时的 itertor.next().done = false
+console.log(iterator.next().value); // 'b'
+console.log(iterator.next().value); // 'c'
+console.log(iterator.next().value); // undefined， 此时的 itertor.next().done = true
+
+const arrNew = ['a' , 'b', 'c'];
+const iteratorNew = arr.values();
+
+// 这里提一下， for ... of 在可迭代对象上，创建一个迭代循环
+for (let e of iteratorNew) {
+    console.log(e);
+}
+// 'a'
+// 'b' 
+// 'c'
+```
+
+- `Array.prototype[@@iterator]()`：也就是数组的默认迭代方法，就是 `values()` 方法。
+
+```js
+const arr = ['a' , 'b', 'c'];
+// 这里提一下， for ... of 在可迭代对象上，创建一个迭代循环
+for (let e of arr) {
+    console.log(e);
+}
+// 'a'
+// 'b' 
+// 'c'
+```
+
+至此，数组差不多所有的方法都介绍了，依稀记得第一次找实习时候的面试，面试官最后用一个问题来决定我是否能通过，说出 5个数组的方法。
