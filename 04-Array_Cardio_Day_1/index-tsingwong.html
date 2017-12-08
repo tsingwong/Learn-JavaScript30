@@ -139,10 +139,8 @@
         // eslint-disable-next-line
         console.log('Array.prototype.reduce()');
         const liveTotal = inventors.reduce((prev, curr, index) => {
-            return index === 1
-                ? prev.passed - curr.year + curr.passed - curr.year
-                : prev + curr.passed - curr.year;
-        });
+            return prev += curr.passed - curr.year;
+        }, 0);
         // eslint-disable-next-line
         console.log(liveTotal);
 
