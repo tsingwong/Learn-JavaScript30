@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Type Ahead 👀</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <form class="search-form">
+        <input type="text" class="search" placeholder="City or State">
+        <ul class="suggestions">
+            <li>Filter for a city</li>
+            <li>or a state</li>
+        </ul>
+    </form>
+    <script>
+        const endpoint =
+            'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+        let response;
+
+        const input = document.querySelector('.search');
+        const suggestions = document.querySelector('.suggestions');
+
+        function ajaxGet(url, fn) {
+            const obj = new XMLHttpRequest();
+            obj.open('GET', url, true);
+            obj.onreadystatechange = function () {
+                if (obj.readyState == 4 && obj.status == 200 || obj.status == 304) { // readyState == 4说明请求已完成
+                    fn.call(this, obj.responseText); //从服务器获得数据
+                }
+            };
+            obj.send();
+        }
+        ajaxGet(endpoint, makeArr);
+
+        function makeArr (text) {
+            response = JSON.parse(text);
+        }
+
+        function search (text, arr) {
+            const result = arr.filter((val, index, arr) => {
+                return (val.city.toLowerCase().indexOf(text.toLowerCase()) > -1)
+                    || (val.state.toLowerCase().indexOf(text.toLowerCase()) > -1);
+            });
+            result && (suggestions.innerHTML = '');
+            const string = result.reduce((pre, cur, index, arr) => {
+                return pre += `<li>${cur.city}, ${cur.state} -${cur.population}`;
+            }, '');
+            suggestions.innerHTML = string;
+        }
+
+        input.addEventListener('input', (e) => {
+            e.target.value && search(e.target.value, response);
+        });
+
+
+
+    </script>
+</body>
+
+</html>
