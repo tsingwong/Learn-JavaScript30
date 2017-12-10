@@ -150,14 +150,14 @@
         const domArr = document.querySelectorAll('.panel');
         let flag = true;
 
-        domArr.forEach((val, index, arr) => {
+        domArr.forEach((val) => {
             
-            val.addEventListener('click', (e) => {
+            val.addEventListener('click', () => {
                 flag = true;
                 val.classList.toggle('open');
             });
 
-            val.addEventListener('dblclick', (e) => {
+            val.addEventListener('dblclick', () => {
                 flag = false;
             });
 
