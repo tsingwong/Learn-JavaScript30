@@ -134,24 +134,24 @@ fetch(myRequest)
 
 request 对象拥有以下属性，且所有属性都是 **只读属性**：
 
-- `method`: 返回当前 request 的方法。HTTP/1.0:GET, POST and HEAD, HTTP/1.1:OPTIONS, PUT, DELETE, TRACE and CONNECT
-- `url`：返回当前 request 的 URL
-- `headers`：返回当前 request 对应的 headers 对象
-- `referrer`：返回由 user agent 设置的当前 request 的来源，如 `about:client`、`''`、URL 等
-- `mode`：返回 request 的模式，如 `same-origin`、`no-cors`、`cors`、`navigate`，默认是 `cors`
-- `credentials`：返回 request 的凭证状况。与 XHR 的 `withCredentials` 标识类似，用来控制在 request 中是否携带 cookie 等证书。默认为 `omit`，从不发送。`same-origin`只有同源是才发送，`inculde` 一直发送。
-- `redirect`：返回 request 使用的重定向模式。默认为 `follow`，可选值为`error`、`manual`
-- `intergrity`：返回 request 的表示子资源完整性的值。默认为 `''`
-- `cache`：返回 request 的缓存模式，该模式控制着 HTTP 请求的缓存情况。默认为 `default`，可选为 `no-store`、`reload`、`no-cache`、`force-cache`、`only-if-cached`
+- `Request.method`: 返回当前 request 的方法。HTTP/1.0:GET, POST and HEAD, HTTP/1.1:OPTIONS, PUT, DELETE, TRACE and CONNECT
+- `Request.url`：返回当前 request 的 URL
+- `Request.headers`：返回当前 request 对应的 headers 对象
+- `Request.referrer`：返回由 user agent 设置的当前 request 的来源，如 `about:client`、`''`、URL 等
+- `Request.mode`：返回 request 的模式，如 `same-origin`、`no-cors`、`cors`、`navigate`，默认是 `cors`
+- `Request.credentials`：返回 request 的凭证状况。与 XHR 的 `withCredentials` 标识类似，用来控制在 request 中是否携带 cookie 等证书。默认为 `omit`，从不发送。`same-origin`只有同源是才发送，`inculde` 一直发送。
+- `Request.redirect`：返回 request 使用的重定向模式。默认为 `follow`，可选值为`error`、`manual`
+- `Request.intergrity`：返回 request 的表示子资源完整性的值。默认为 `''`
+- `Request.cache`：返回 request 的缓存模式，该模式控制着 HTTP 请求的缓存情况。默认为 `default`，可选为 `no-store`、`reload`、`no-cache`、`force-cache`、`only-if-cached`
 
 注：由于 request 类实现了 Body 类，所以 Body 的属性，request 也可以使用，如 `body`、`bodyUsed`。
 
 
 request 对象拥有以下方法：
 
-- `clone()`：返回一个克隆当前 request 对象的对象
+- `Request.clone()`：返回一个克隆当前 request 对象的对象
 
-注：由于 request 类实现了 Body 类，所以 Body 的属性，request 也可以使用，如 `arrayBuffer()`、`blob()`、`formData()`、`json()`、`text()`。
+注：由于 Request 类实现了 Body 类，所以 Body 的属性，request 也可以使用，如 `arrayBuffer()`、`blob()`、`formData()`、`json()`、`text()`。
 
 举个简单的例子：
 
@@ -242,14 +242,14 @@ fetch(myRequest)
 
 `Headers` 类定义了一下方法：
 
-- `append()`：从 Headers 对象中，为现有 header 添加一个值，或添加一个未存在的 header 并赋值
-- `delete()`：从 Headers 对象中删除指定 header
-- `entries()`：以迭代器形式返回 Headers 对象中所有的键值对
-- `get()`：从 Headers 对象中返回指定 header 的第一个值
-- `has()`：以布尔值的形式从 Headers 对象中返回是否存在指定的 header
-- `keys()`：以迭代器形式返回 Headers 对象中所有的键名
-- `set()`：从 Headers 对象中，替换现有 header 值，或添加一个未存在的 header 并赋值
-- `values()`：以迭代器形式返回 Headers 对象中所有存在的 header 值
+- `Headers.append()`：从 `Headers` 对象中，为现有 `header` 添加一个值，或添加一个未存在的 `header` 并赋值
+- `Headers.delete()`：从 `Headers` 对象中删除指定 `header`
+- `Headers.entries()`：以迭代器形式返回 `Headers` 对象中所有的键值对
+- `Headers.get()`：从 `Headers` 对象中返回指定 `header` 的第一个值
+- `Headers.has()`：以布尔值的形式从 `Headers` 对象中返回是否存在指定的 `header`
+- `Headers.keys()`：以迭代器形式返回 `Headers` 对象中所有的键名
+- `Headers.set()`：从 `Headers` 对象中，替换现有 `header` 值，或添加一个未存在的 `header` 并赋值
+- `Headers.values()`：以迭代器形式返回 `Headers` 对象中所有存在的 `header` 值
 
 ##### Response 对象
 
@@ -293,25 +293,25 @@ addEventListener('fetch', event => {
 
 不管是请求还是相应都少不了 `body` 对象，body 也可以是下面任意类型的实例
 
-- ArrayBuffer
-- ArrayBufferView
-- Blob/File
-- string
-- URLSearchParams
-- FormData
+- `Body.ArrayBuffer`
+- `Body.ArrayBufferView`
+- `Body.Blob/File`
+- `Body.string`
+- `Body.URLSearchParams`
+- `Body.FormData`
 
 `Body` 类定义以下属性（这些属性都被 Request 和Response 所实现）：
 
-- `body`：返回一个 getter 带 body 对象内容的字节流
-- `bodyUsed`：返回一个布尔值，表示 body 对象是否被读取过
+- `Body.body`：返回一个 getter 带 body 对象内容的字节流
+- `Body.bodyUsed`：返回一个布尔值，表示 body 对象是否被读取过
 
 `Body` 类定义了以下方法（这些方法都被 Request 和Response 所实现）用于获取 body 的内容，这些方法都会返回一个被解析后的 promise 对象和数据。
 
-- arrayBuffer()
-- blob()
-- json()
-- text()
-- formData()
+- `Body.arrayBuffer()`
+- `Body.blob()`
+- `Body.json()`
+- `Body.text()`
+- `Body.formData()`
 
 
 非常重要的一点说明，那就是 `Request` 和 `Reponse` 的 `body` 只能被读取一次，有个属性叫 `bodyUsed`，读取一次后就被设置为 `true`。
