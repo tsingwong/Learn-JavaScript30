@@ -141,6 +141,56 @@ request 对象拥有以下属性，且所有属性都是 **只读属性**：
 - `mode`：返回 request 的模式，如 `same-origin`、`no-cors`、`cors`、`navigate`，默认是 `cors`
 - `credentials`：返回 request 的凭证状况。与 XHR 的 `withCredentials` 标识类似，用来控制在 request 中是否携带 cookie 等证书。默认为 `omit`，从不发送。`same-origin`只有同源是才发送，`inculde` 一直发送。
 - `redirect`：返回 request 使用的重定向模式。默认为 `follow`，可选值为`error`、`manual`
+- `intergrity`：返回 request 的表示子资源完整性的值。默认为 `''`
+- `cache`：返回 request 的缓存模式，该模式控制着 HTTP 请求的缓存情况。默认为 `default`，可选为 `no-store`、`reload`、`no-cache`、`force-cache`、`only-if-cached`
+
+注：由于 request 类实现了 Body 类，所以 Body 的属性，request 也可以使用，如 `body`、`bodyUsed`。
+
+
+request 对象拥有以下方法：
+
+- `clone()`：返回一个克隆当前 request 对象的对象
+
+注：由于 request 类实现了 Body 类，所以 Body 的属性，request 也可以使用，如 `arrayBuffer()`、`blob()`、`formData()`、`json()`、`text()`。
+
+举个简单的例子：
+
+```js
+const myRequest = new Request('http://localhost/flower.jpg');
+
+const myURL = myRequest.url; // "http://localhost/flower.jpg"
+const myMethod = myRequest.method; // "GET"
+const myCred = myRequest.credentials; // "omit"
+
+console.log(myRequest);
+/*
+{
+    bodyUsed:false
+    credentials:"omit"
+    headers:Headers {}
+    integrity:""
+    method:"GET"
+    mode:"cors"
+    redirect:"follow"
+    referrer:"about:client"
+    referrerPolicy:""
+    url:"http://localhost/flower.jpg"
+}
+*/
+
+const myRequestNew = new Request('http://localhost/api', {
+    method: 'POST',
+    body: '{"foo": "bar"}'
+});
+
+const myURLNew = myRequestNew.url; // http://localhost/api
+const myMethodNew = myRequestNew.method; // POST
+const myCredNew = myRequestNew.credentials; // omit
+const bodyUsedNew = myRequestNew.bodyUsed; // false
+
+myRequestNew.text();
+console.log(myRequestNew.bodyUsed); // true
+```
 
 
 ##### Headers 对象
@@ -219,12 +269,26 @@ addEventListener('fetch', event => {
 
 `Response()` 构造函数可以接受两个可选参数，数据体和初始化对象（与上面的 `request()` 方法的初始化参数类似）
 
-`response` 对象常用的属性有：
+`response` 对象有以下属性，且属性都是只读：
 
+- `Response.headers`：返回 response 的 headers 对象。
+- `Response.ok`：该属性用于检查 `response` 的状态码是否在 200-299 范围内，该属性返回一个布尔值。
+- `Response.redirected`：返回一个布尔值，表示请求是否被重定向
 - `Response.status`：整数（默认为 200），是 HTTP 的状态码
 - `Response.statusText`：字符串（默认为 "OK"），该值与 `status` 对应
-- `Response.ok`：该属性用于检查 `response` 的状态码是否在 200-299 范围内，该属性返回一个布尔值。
+- `Response.type`：返回字符串，表示 response 的类型。默认值为 `basic`，可选为 `cors`、`error`、`opaque`
+- `Response.url`：返回字符串，表示 response 的 URL
 
+注：由于 Response 类实现了 Body 类，所以 Body Response 也可以使用，如 `body`、`bodyUsed`。
+
+`response` 对象有以下方法：
+
+- `Response.clone()`：返回一个克隆当前 request 对象的对象
+- `Response.error()`：返回一个带有 网络错误的 新 response 对象
+- `Response.redirect()`：返回由不一样 URL 创建的 response 对象
+
+
+注：由于 Response 类实现了 Body 类，所以 Body 的属性，response 也可以使用，如 `arrayBuffer()`、`blob()`、`formData()`、`json()`、`text()`。
 ##### Body 对象
 
 不管是请求还是相应都少不了 `body` 对象，body 也可以是下面任意类型的实例
@@ -236,7 +300,12 @@ addEventListener('fetch', event => {
 - URLSearchParams
 - FormData
 
-`Body` 类定义了以下方法（这些方法都被 Request 和Response所实现）用于获取 body 的内容，这些方法都会返回一个被解析后的 promise 对象和数据。
+`Body` 类定义以下属性（这些属性都被 Request 和Response 所实现）：
+
+- `body`：返回一个 getter 带 body 对象内容的字节流
+- `bodyUsed`：返回一个布尔值，表示 body 对象是否被读取过
+
+`Body` 类定义了以下方法（这些方法都被 Request 和Response 所实现）用于获取 body 的内容，这些方法都会返回一个被解析后的 promise 对象和数据。
 
 - arrayBuffer()
 - blob()
@@ -244,7 +313,6 @@ addEventListener('fetch', event => {
 - text()
 - formData()
 
-##### 流和克隆
 
 非常重要的一点说明，那就是 `Request` 和 `Reponse` 的 `body` 只能被读取一次，有个属性叫 `bodyUsed`，读取一次后就被设置为 `true`。
 
@@ -263,17 +331,17 @@ response.text().catch(e => console.log("Tried to read already consumed Response:
 
 ```js
 addEventListener('fetch', function(evt) {
-  var sheep = new Response("Dolly");
-  console.log(sheep.bodyUsed); // false
-  var clone = sheep.clone();
-  console.log(clone.bodyUsed); // false
+    var sheep = new Response("Dolly");
+    console.log(sheep.bodyUsed); // false
+    var clone = sheep.clone();
+    console.log(clone.bodyUsed); // false
 
-  clone.text();
-  console.log(sheep.bodyUsed); // false
-  console.log(clone.bodyUsed); // true
+    clone.text();
+    console.log(sheep.bodyUsed); // false
+    console.log(clone.bodyUsed); // true
 
-  evt.respondWith(cache.add(sheep.clone()).then(function(e) {
-    return sheep;
-  });
+    evt.respondWith(cache.add(sheep.clone()).then(function(e) {
+        return sheep;
+    });
 });
 ```
