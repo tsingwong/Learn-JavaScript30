@@ -25,5 +25,5 @@ module.exports = {
             "always"
         ]
     },
-    "plugins": [ "html" ]
+    "plugins": ["html"]
 };
