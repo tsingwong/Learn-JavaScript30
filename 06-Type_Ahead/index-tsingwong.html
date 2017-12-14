@@ -69,6 +69,37 @@
                 return val.city.match(reg) || val.state.match(reg);
             });
         }
+        
+        function numberWithComas (x) {
+            return x.replace(/(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        function displayMatches () {
+            const matchArr = findMatches(this.value, cities);
+            let html;
+            if (matchArr.length > 0 && this.value) {
+                html = matchArr.reduce((prev, curr, index, arr) => {
+                    const regex = new RegExp(this.value, 'gi');
+                    const cityName = curr.city.replace(regex, `<span class="hl">${this.value}</span>`);
+                    const stateName = curr.state.replace(regex, `<span class="hl">${this.value}</span>`);
+                    return `
+                        ${prev}
+                        <li>
+                            <span class="name">${cityName}, ${stateName}</span>
+                            <span class="population">${numberWithComas(curr.population)}</span>
+                        </li>
+                    `;
+                }, '');
+            } else {
+                html = '<li>Filter for a city</li><li>or a state</li>';
+            }
+            suggestions.innerHTML = html;
+        }
+
+        const searchInput = document.querySelector('.search');
+        const suggestions = document.querySelector('.suggestions');
+
+        searchInput.addEventListener('keyup', displayMatches);
     </script>
 </body>
 
