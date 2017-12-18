@@ -44,4 +44,18 @@
 - `Canvas.toDataURL(type, quality)`：返回一个数据地址（data URL），可以将它设定为 img 元素的 src 属性值。第一个参数指定图像的类型，如 `image/jpeg` 或 `image/png`，默认值是后者。第二个参数必须是 0 ~ 1.0 之间的 double 值，表示 JPEG 图像的显示质量，默认值为 0.92。
 - `Canvas.toBlob(callback, type, args...)`：创建一个用于表示此 canvas 元素图像文件的 Blob。第一个参数是一个回调函数，浏览器会以新创建的 blob 对象为参数，去调用该回调函数。第二个参数是以 `image/png` 这样的形式来指定图像类型，默认为 `image/png`。最后一个参数为介于 0 ~ 1.0 之间的值，表示 JPEG 图像的质量。
 
+##### 2d 绘图环境
 
+在 JavaScript 代码中，一般很少会使用 canvas 元素本身，除了偶尔通过 canvas 元素获取其 宽高或数据地址等操作。大多数操作都是基于 `context` 对象（这里介绍的以 2D为主）。
+
+```js
+const canvas = document.querySelector('canvas');
+const context = canvas.getContext('2d');
+```
+
+`CanvasRenderingContext2D` 的属性：
+
+- `context.canvas`：指回该绘图环境所述的 canvas 对象。常用语通过它来获取 canvas 的宽高，如`context.canvas.width/height`。
+- `context.fillstyle`：指定绘图环境在后续的图形填充操作中所使用的颜色、渐变色或图案。
+- `context.font`：指定在调用绘图环境对象的 fillText() 或 strokeText() 方法时，使用的字体
+- `context.globalAlpha`：全局透明度设置
