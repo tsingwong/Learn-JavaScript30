@@ -58,4 +58,16 @@ const context = canvas.getContext('2d');
 - `context.canvas`：指回该绘图环境所述的 canvas 对象。常用语通过它来获取 canvas 的宽高，如`context.canvas.width/height`。
 - `context.fillstyle`：指定绘图环境在后续的图形填充操作中所使用的颜色、渐变色或图案。
 - `context.font`：指定在调用绘图环境对象的 fillText() 或 strokeText() 方法时，使用的字体
-- `context.globalAlpha`：全局透明度设置
+- `context.globalAlpha`：全局透明度设置，取值范围为 0 ~ 1.0（即完全透明到完全不透明），浏览器会将每个像素的 alpha 与该值相乘，得到该像素点最后的透明度。
+- `context.globalCompsiteOperation `：该值决定浏览器将某个物体绘制在另一个物体上，所采用的绘制方式。
+- `context.lineCap`：浏览器如何绘制线段的断点。可选值为`butt`、`round`、`square`，默认值是 `butt`。
+- `context.lineWidth`：浏览器如何绘制线段的屏幕像素宽度。必须是非负、非无穷的数。默认值为 1.0。
+- `context.lineJoin`：浏览器在两条线段相交时如何绘制焦点。可选值为 `bevel`、`round`、`miter`，默认为 `miter`。
+- `context.miterLimit`：浏览器如何绘制 miter 形式的线段焦点。
+- `context.shadowBlur`：浏览器如何延伸阴影效果。值越高，阴影效果延伸越远。该值不是指阴影的像素长度，而是代表高丽模糊方程式中的参数值，必须是非负、非无穷的数，默认值是 0。
+- `context.shadowColor`：浏览器使用何种颜色来描绘阴影。通常采用半透明色作为该属性的值，以便让后面的背景能显示出来。
+- `context.shadowOffsetX`：以像素为单位，制定了阴影效果的水平方向偏移量。
+- `context.shadowOffsetY`：以像素为单位，指定了阴影效果的垂直方向偏移量。
+- `context.strokeStyle`：对路径进行描边时所使用的绘制风格，该值可以被设置为某个颜色（关键词，rgb/rgba，hsl/hsla）、渐变色或图案等。
+- `context.textAlign`：以 `fillText()` 或 `strokeText()` 方式绘制时，所画的文字的水平对其方式。
+- `context.textBaseline`：以 `fillText()` 或 `strokeText()` 方式绘制时，所画的文字的垂直对其方式。
