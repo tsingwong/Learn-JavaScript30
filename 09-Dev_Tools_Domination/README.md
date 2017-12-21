@@ -18,14 +18,25 @@
 - `console.group([label])`：在 web console 中创建一个行内的组，且可以嵌套，直到 `console.groupEnd()` 方法的出现。
 - `console.groupCollapsed([label])`： 与上面的 `console.group([label])` 方法一毛一样，唯一区别在于前者默认收起，后者默认展开。
 - `console.groupEnd()`：结束当前对应的行内组。
-- `console.info(msg/obj)`：在 web console 中发送通知信息。
-- `console.log(msg/obj)`：在 web console 中发送信息。
+- `console.info(msg/obj)`：在 web console 中输出通知信息。
+- `console.log(msg/obj)`：在 web console 中输出信息。
 - `console.profile([label])`：开始记录性能剖析。
 - `console.profileEnd()`：结束性能剖析。
 - `console.table(data[, columns])`：将数据以表格的形式显示
 - `console.time(timerName)`：启动一个计时器，页面可同时启动 10000 个计时器，以毫秒作为单位，直到 `console.timeEnd()` 输出对应计时器所经过的时间。
-- `console.timeEnd()`
-- `console.timeStamp()`
-- `console.trace()`
-- `console.warn()`
+- `console.timeEnd()`：结束上面的 `console.time()` 方法的计时器，并输出该值。
+- `console.timeStamp([label])`：在浏览器的 [Performance](https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/reference) 中添加一个标记。
+- `console.trace()`：在 web console 中输出一个堆栈跟踪。
+- `console.warn(msg/obj)`：在 web console 中输出一个警告信息。
 
+#### 字符串替换功能
+
+
+- `%s` 字符串
+- `%d / %i` 整数
+- `%f` 浮点值
+- `%o / %O` Object
+
+#### 指定输出样式
+
+- %c 设定输出的样式，在之后的文字将按照第二个参数里的值进行显示
