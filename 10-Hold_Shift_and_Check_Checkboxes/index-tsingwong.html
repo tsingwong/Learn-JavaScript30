@@ -101,18 +101,17 @@
 
     <script>
         let arr = document.querySelectorAll('input[type="checkbox"]');
-        let From, End, isShift;
+        let From, End;
         arr = [...arr];
         arr.forEach((element, index, arr)=> {
             element.addEventListener('click', (e) => {
-                if (isShift && From >= 0) {
+                if (e.shiftKey && From >= 0) {
                     End = arr.findIndex((val, index, arr) => {
                         return val === e.target;
                     });
-                    if (From > End) {
-                        [From, End] = [End, From];
-                    }
-                    arr.slice(From, End).forEach((element, index, arr) => {
+                    [From, End] = From > End ? [End, From] : [From, End];
+                    // 因为 slice() 方法是前开后闭，所以需要 + 1
+                    arr.slice(From, End + 1).forEach((element, index, arr) => {
                         element.checked = true;
                     });
                 } else {
@@ -120,16 +119,7 @@
                         return val === e.target;
                     });
                 }
-                
             });
-        });
-
-        document.addEventListener('keydown', (e) => {
-            (e.keyCode === 16) && (isShift = true) && (console.log(1233131));
-            
-        });
-        document.addEventListener('keyup', (e) => {
-            (e.keyCode === 16) && (isShift = false);
         });
     </script>
 </body>
