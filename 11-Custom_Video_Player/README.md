@@ -71,3 +71,17 @@
 ##### 使用注意
 
 `<video>` 标签可以包含一个或多个视频来源。为了指定使用的视频来源，可以使用 `src` 属性或 `source` 标签。
+
+##### HTMLVideoElement
+
+`HTMLVideoElement` 继承自 `HTMLMediaElement` 节点。简单介绍下本次课程中用到的属性和方法。
+
+- `HTMLMediaElement.currentTIme`：返回表示当前播放时间的`double` 秒数。改变这个数字可以改变当前播放的进度。
+- `HTMLMediaElement.duration`：返回表示当前媒体长度的 `double` 秒数。
+- `HTMLMediaElement.muted`：返回表示当前是否静音的布尔值。
+- `HTMLMediaElement.paused`：返回表示当前是否暂停的布尔值。
+- `HTMLMediaElement.volume`：返回表示当前媒体声音的 `double` 数，从 0.0 - 1.0（从小到大）。
+
+- `HTMLMediaElement.pause()`：暂停当前媒体的播放。
+- `HTMLMediaElement.play()`：播放当前媒体的播放。
+

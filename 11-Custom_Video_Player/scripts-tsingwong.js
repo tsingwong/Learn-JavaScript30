@@ -40,6 +40,12 @@ function handleProgress () {
     const percent = (video.currentTime / video.duration) * 100;
     progress__filled.style.flexBasis = `${percent}%`;
 }
+
+function scrub (e) {
+    const scrubTime = (e.offsetX / progress.offsetWidth) * video.duration;
+    video.currentTime = scrubTime;
+
+}
 /* 增加监听 */
 
 video.addEventListener('click', togglePlay);
@@ -54,4 +60,12 @@ ranges.forEach(range => {
     range.addEventListener('mousemove', handleRangeUpdate);
 }); 
 
-video.addEventListener('playing', handleProgress);
+video.addEventListener('timeupdate', handleProgress);
+progress.addEventListener('click', scrub);
+
+let mousedown = false;
+
+progress.addEventListener('mousedown', () => mousedown = true);
+progress.addEventListener('mouseup', () => mousedown = false);
+progress.addEventListener('mousemove', (e) => mousedown && scrub(e));
+
