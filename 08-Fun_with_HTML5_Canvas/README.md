@@ -60,7 +60,7 @@ const context = canvas.getContext('2d');
 - `context.font`：指定在调用绘图环境对象的 fillText() 或 strokeText() 方法时，使用的字体
 - `context.globalAlpha`：全局透明度设置，取值范围为 0 ~ 1.0（即完全透明到完全不透明），浏览器会将每个像素的 alpha 与该值相乘，得到该像素点最后的透明度。
 - `context.globalCompsiteOperation `：该值决定浏览器将某个物体绘制在另一个物体上，所采用的绘制方式。
-- `context.lineCap`：浏览器如何绘制线段的断点。可选值为`butt`、`round`、`square`，默认值是 `butt`。
+- `context.lineCap`：浏览器如何绘制线段的端点。可选值为`butt`、`round`、`square`，默认值是 `butt`。
 - `context.lineWidth`：浏览器如何绘制线段的屏幕像素宽度。必须是非负、非无穷的数。默认值为 1.0。
 - `context.lineJoin`：浏览器在两条线段相交时如何绘制焦点。可选值为 `bevel`、`round`、`miter`，默认为 `miter`。
 - `context.miterLimit`：浏览器如何绘制 miter 形式的线段焦点。
@@ -71,3 +71,26 @@ const context = canvas.getContext('2d');
 - `context.strokeStyle`：对路径进行描边时所使用的绘制风格，该值可以被设置为某个颜色（关键词，rgb/rgba，hsl/hsla）、渐变色或图案等。
 - `context.textAlign`：以 `fillText()` 或 `strokeText()` 方式绘制时，所画的文字的水平对其方式。
 - `context.textBaseline`：以 `fillText()` 或 `strokeText()` 方式绘制时，所画的文字的垂直对其方式。
+
+绘制矩形：
+
+- `context.clearRect(x, y, width, height)`：擦除指定矩形区域之前绘制的内容，并将其所有像素都变为透明。
+- `context.fillRect(x, y, width, height)`：绘制填充矩形，`context.fillStyle` 属性决定矩形的样式。
+- `context.strokeRect(x, y, width, height)`：绘制描边矩形，`context.strokeStyle` 属性决定矩形的样式。
+
+绘制文本：
+
+- `context.fillText(text, x, y [, maxWidth])`：使用当前的 font, textAlign, textBaseline 和 direction 值对文本进行渲染，在该位置绘制填充文字。如果选项的第四个参数提供了最大宽度，文本会进行缩放以适应最大宽度。
+- `context.strokeText(text, x, y [, maxWidth])`：使用当前 font，textAlign，textBaseline和direction 的值对文本进行渲染，在该位置绘制描边文字。如果选项的第四个参数提供了最大宽度，文本会进行缩放以适应最大宽度。
+- `context.measureText(text)`：返回一个 `TextMetrics` 对象，包含关于文本尺寸的信息。
+
+线型：
+
+- `context.lineWidth`：设置线段的宽度。默认是 1.0。当给属性赋值时， 0、 负数、 `Infinity` 和 `NaN` 都会被忽略；除此之外，都会被赋予一个新值。
+- `context.lineCap`：设置线段末端的属性。默认值是 butt，可选值：butt（方形）, round （圆形）和 square （方形 + 1 / 2 宽度值的高度）。
+- `context.lineJoin`：设置线段相交的属性。默认值是 miter，可选值为：round（通过填充一个额外的，圆心在相连部分末端的扇形，绘制拐角的形状。 圆角的半径是线段的宽度）, bevel（在相连部分的末端填充一个额外的以三角形为底的区域， 每个部分都有各自独立的矩形拐角） 和 miter（通过延伸相连部分的外边缘，使其相交于一点，形成一个额外的菱形区域）。
+- `context.miterLimit`：设置斜接面限制比例的属性。默认值是 10.0。当给属性赋值时， 0、负数、 Infinity 和 NaN 都会被忽略；除此之外都会被赋予一个新值。
+- `context.setLineDash(segments)`：设置虚线样式，segments 是一个数组，一组描述交替绘制线段和间距（坐标空间单位）长度的数字，如果数组元素的数量是奇数， 数组的元素会被复制并重复。其表现就是按照数组中的顺序来控制线段的长度和空白的长度。
+- `context.getLineDash()`：获取当前虚线样式，返回一个数组。一组描述交替绘制线段和间距（坐标空间单位）长度的数字。如果数组元素的数量是奇数，数组元素会被复制并重复。 
+- `context.lineDashOffset`：设置虚线的偏移量属性。默认值为 0.0。
+
