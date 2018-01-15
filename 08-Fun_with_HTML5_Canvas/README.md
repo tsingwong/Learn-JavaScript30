@@ -92,5 +92,85 @@ const context = canvas.getContext('2d');
 - `context.miterLimit`：设置斜接面限制比例的属性。默认值是 10.0。当给属性赋值时， 0、负数、 Infinity 和 NaN 都会被忽略；除此之外都会被赋予一个新值。
 - `context.setLineDash(segments)`：设置虚线样式，segments 是一个数组，一组描述交替绘制线段和间距（坐标空间单位）长度的数字，如果数组元素的数量是奇数， 数组的元素会被复制并重复。其表现就是按照数组中的顺序来控制线段的长度和空白的长度。
 - `context.getLineDash()`：获取当前虚线样式，返回一个数组。一组描述交替绘制线段和间距（坐标空间单位）长度的数字。如果数组元素的数量是奇数，数组元素会被复制并重复。 
-- `context.lineDashOffset`：设置虚线的偏移量属性。默认值为 0.0。
+- `context.lineDashOffset`：设置虚线的偏移量属性。默认值为 0.0。可以用于实现跑马灯效果。
 
+文本样式：
+- `context.font`：设置当前字体样式的属性。与 css font 规范相同。默认为 `10 px sans-serif`。
+- `context.textAlign`：设置当前文本对齐方式的属性。注意，该对齐是基于 `context.fillText` 方法的x的值。所以如果 textAlign="center"，那么该文本将画在 x-50%*width。可选值为 `left | right | start | end | center`。
+- `context.textBaseline`：设置当前文本基线的属性，即决定文字垂直方向上的对其方式。默认为 `alphabetic`。可选值为： `top | hanging | middle | alphabetic | ideographic | bottom`。
+- `context.direction`：设置当前文字方向的属性。默认为 `inherit`。可选值为： `ltr | rtl | inherit`。
+
+填充和描边样式:
+
+- `context.fillStyle`：设置填充颜色和样式的属性。默认值是 `#000`。可以是以下三种：color | gradient | pattern。
+- `context.strokeStyle`：设置描边颜色和样式的属性。默认值是 `#000`。可以是以下三种：color | gradient | pattern。
+
+渐变和图案：
+
+- `context.createLinearGradient(x0, y0, x1, y1)`：创建一个沿参数坐标指定的直线的渐变。该方法返回一个线性 `CanvasGradient` 对象。使用 `createLinearGradient()` 方法创建一个指定了开始和结束点的 `CanvasGradient` 对象。创建成功后，你就可以使用 `CanvasGradient.addColorStop()` 方法，根据指定的偏移和颜色定义一个新的终止。 如例子所示，渐变允许赋值给当前的 `fillStyle` ，使用 `fillRect()` 方法时，在 canvas 上绘制出效果。
+- `context.createRadialGradient(x0, y0, r0, x1, y1, r1)`：根据参数确定两个圆的坐标，绘制放射性渐变的方法。该方法返回一个放射性 `CanvasGradient` 对象。使用 `createRadialGradient` 方法创建一个指定了开始和结束圆的 `CanvasGradient` 对象。 一旦创建，你可以使用 `CanvasGradient.addColorStop()` 方法根据指定的偏移和颜色定义一个新的终止。你可以将当前的 `fillStyle` 设置成此渐变， 当使用 `fillRect()` 方法时，会在 canvas 上绘制出效果。
+- `context.createPattern(image, repetition)`：使用指定的图像创建模式的方法。 它通过 `repetition` 参数在指定的方向上重复元图像。此方法返回一个 `CanvasPattern` 对象。使用 `createPattern` 方法创建一个指定图像和重复的 `CanvasPattern` 对象。创建完成后，可以使用 `CanvasPattern.setTransform()` 方法对图案进行变形。如示例所示，你可以把此模式赋值给当前的 `fillStyle`，当你使用 `fillRect() `方法时，会在 canvas 上绘制出效果。
+
+阴影：
+
+- `context.shadowBlur`：设置阴影模糊效果程度的属性。它既不对应像素值也不受当前转换矩阵的影响。 默认值是 0。负数、 Infinity 或者 NaN 都会被忽略。
+- `context.shadowColor`：设置阴影颜色的属性。默认值是 `fully-transparent black`。注意： `shadowColor` 属性设置成不透明的，并且 `shadowBlur`、 `shadowOffsetX` 或者 `shadowOffsetY` 属性不为0，阴影才会被绘制。
+- `context.shadowOffsetX`：设置阴影水平偏移距离的属性。默认值是 0。Infinity 或者 NaN 都会被忽略。
+- `context.shadowOffsetY`：设置阴影垂直偏移距离的属性。默认值是 0。Infinity 或者 NaN 都会被忽略。
+
+路径：
+
+- `context.beginPath()`：通过清空子路径列表开始一个新路径的方法。 当你想创建一个新的路径时，调用此方法。
+- `context.closePath()`：将笔点返回到当前子路径起始点的方法。它尝试从当前点到起始点绘制一条直线。 如果图形已经是封闭的或者只有一个点，那么此方法不会做任何操作。所以 `fill()` 函数会将未闭合图形自动闭合但 `stroke()` 函数不会自动闭合。
+- `context.moveTo(x, y)`：将一个新的子路径的起始点移动到 `(x，y)` 坐标的方法。
+- `context.lineTo(x, y)`：使用直线连接子路径的终点到 `(x，y)` 坐标的方法（并不会真正地绘制）。
+- `context.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)`：绘制三次贝赛尔曲线路径的方法。 该方法需要三个点。 第一、第二个点是控制点，第三个点是结束点。起始点是当前路径的最后一个点，绘制贝赛尔曲线前，可以通过调用 `moveTo()` 进行修改。
+- `context.quadraticCurveTo()`：绘制二次贝塞尔曲线路径的方法。它需要2个点。 第一个点是控制点，第二个点是终点。 起始点是当前路径最新的点，当创建二次贝赛尔曲线之前，可以使用 `moveTo()` 方法进行改变。
+- `context.arc(x, y, radius, startAngle, endAngle, anticlockwise)`：绘制圆弧路径的方法。 圆弧路径的圆心在 `(x, y)` 位置，半径为 r ，根据 `anticlockwise` （默认为顺时针，false）指定的方向从 `startAngle` 开始绘制，到 `endAngle` 结束。
+- `context.arcTo(x1, y1, x2, y2, radius)`：根据控制点和半径绘制圆弧路径，使用当前的描点(前一个moveTo或lineTo等函数的止点)。根据当前描点与给定的控制点1连接的直线，和控制点1与控制点2连接的直线，作为使用指定半径的圆的切线，画出两条切线之间的弧线路径。
+- `context.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise)`：添加椭圆路径的方法。椭圆的圆心在`(x,y)`位置，半径分别是 `radiusX` 和 `radiusY` ，`rotation` 是椭圆的旋转角度，以弧度表示(非角度度数)， 按照 `anticlockwise`（默认顺时针）指定的方向，从 startAngle  开始绘制，到 endAngle 结束。
+- `context.rect(x, y, width, height)`：创建矩形路径的方法，矩形的起点位置是 `(x, y)` ，尺寸为 `width` 和 `height`。矩形的4个点通过直线连接，子路径做为闭合的标记，所以你可以填充或者描边矩形。
+
+绘制路径：
+
+- `context.fill([path, fillRule])`： 根据当前的填充样式，填充当前或已存在的路径的方法。采取非零环绕或者奇偶环绕规则。`path` 是需要填充的路径，`fillRule` 是填充算法，`nonzero`: 非零环绕规则， 默认的规则。`evenodd`: 奇偶环绕规则。
+- `context.stroke([path])`：使用非零环绕规则，根据当前的画线样式，绘制当前或已经存在的路径的方法。
+- `context.drawFocusIfNeeded([path, element])`： 用来给当前路径或特定路径绘制焦点的方法，如果给定的元素获取了焦点。
+- `context.scrollPathIntoView([path])`：将当前或给定的路径滚动到窗口的方法。类似于 `Element.scrollIntoView()`。
+- `context.clip([path, fillRule])`：将当前创建的路径设置为当前剪切路径的方法。参数属性同 `fill()`。
+- `context.isPointInPath([path, ]x, y[, fillRule])`：用于判断在当前路径中是否包含检测点的方法，返回布尔值。参数属性同上。
+- `context.isPointInStroke([path, ]x, y)`：用于检测某点是否在路径的描边线上的方法，返回布尔值。
+
+变换，在 `CanvasRenderingContext2D` 渲染背景中的对象会有一个当前的变换矩阵，一些方法可以对其进行控制。当创建当前的默认路径，绘制文本、图形和Path2D对象的时候，会应用此变换矩阵。：
+
+- `context.currentTransform`：设置当前变换的矩阵(SVGMatrix对象)。
+- `context.rotate(angle)`：在变换矩阵中增加旋转的方法。角度变量表示一个顺时针旋转角度并且用弧度表示。
+- `context.scale(x, y)`：根据 x 水平方向和 y 垂直方向，为 canvas 单位添加缩放变换的方法。参数 x、y 分别为水平和垂直方向上的缩放因子。
+- `context.translate(x, y)`：通过在网格中移动 canvas 和 canvas 原点 x 水平方向、原点 y 垂直方向，添加平移变换的方法。参数 x、y 分别是水平和垂直方向上的移动距离。
+- `context.transform(a, b, c, d, e, f)`：使用矩阵多次叠加当前变换的方法，矩阵由方法的参数进行描述。你可以缩放、旋转、移动和倾斜上下文。参数 a 是水平缩放，参数 b 是水平倾斜，参数 c 是垂直倾斜，参数 d 是垂直缩放，参数 e 是水平移动，参数 f 是 垂直移动。
+- `context.setTransform()`：使用单位矩阵重新设置（覆盖）当前的变换并调用变换的方法，此变换由方法的变量进行描述。参数同上。
+
+合成：
+
+- `context.globalAlpha`：用来描述在 canvas 上绘图之前，设置图形和图片透明度的属性。 数值的范围从 0.0 （完全透明）到1.0 （完全不透明）。默认值是 1.0。 如果数值不在范围内，包括 Infinity 和 NaN ，无法赋值，并且 globalAlpha 会保持原有的数值。
+- `context.globalCompositeOperation`：设置要在绘制新形状时应用的合成操作的类型，可以设置为是用于标识要使用的合成或混合模式操作的字符串。
+
+绘制图像：
+
+- `context.drawImage(image, [sx, sy, sWidth, sHeight, ]dx, dy[, dWidth, dHeight])`：提供了多种方式来在Canvas上绘制图像。参数 image 是绘制到上下文的元素；参数 dx 是目标画布的左上角在目标 canvas 上 X 轴的位置；参数 dy 是目标画布的左上角在目标 canvas 上 Y 轴的位置；参数 dWidth 在目标画布上绘制图像的宽度，允许对绘制的图像进行缩放，默认不会缩放；参数 dHeight 是在目标画布上绘制图像的高度，允许对绘制的图像进行缩放，默认不会缩放；参数 sx 是需要绘制到目标上下文中的，源图像的矩形选择框的左上角 X 坐标；参数 sy 是需要绘制到目标上下文中的，源图像的矩形选择框的左上角 Y 坐标；参数 sWidth 是需要绘制到目标上下文中的，源图像的矩形选择框的宽度，默认整个矩形从坐标的sx和sy开始，到图像的右下角结束；参数 sHeight 需要绘制到目标上下文中的，源图像的矩形选择框的高度，默认整个矩形从坐标的sx和sy开始，到图像的右下角结束。
+
+像素控制：
+
+- `context.createImageData([width, height]|imageData)`：创建一个 新的、空白的、指定大小的 ImageData 对象，并返回该 ImageData 对象。所有的像素在新对象中都是透明的。
+- `context.getImageData(sx, sy, sw, sh)`：返回一个 ImageData 对象，用来描述 canvas 区域隐含的像素数据，这个区域通过矩形表示，起始点为(sx, sy)、宽为sw、高为sh。
+- `context.putImageData(imagedata, dx, dy[, dirtyX, dirtyY, dirtyWidth, dirtyHeight])`：将数据从已有的 ImageData 对象绘制到位图的方法。 如果提供了一个绘制过的矩形，则只绘制该矩形的像素。此方法不受画布转换矩阵的影响。
+
+图像平滑：
+
+- `context.imageSmoothingEnabled`：用来设置图片是否平滑的属性，true 表示图片平滑（默认值），false 表示图片不平滑。当我们获取 imageSmoothingEnabled 属性值时， 它会返回最新设置的值。
+
+canvas 状态：
+
+- `context.save()`：通过将当前状态放入栈中，保存 canvas 全部状态的方法。
+- `context.restore()`：通过在绘图状态栈中弹出顶端的状态，将 canvas 恢复到最近的保存状态的方法。 如果没有保存状态，此方法不做任何改变。
+- `context.canvas`：该属性是是只读的，是 HTMLCanvasElement 的反向引用。如果没有 <canvas> 元素与之对应，对象值为null 。
