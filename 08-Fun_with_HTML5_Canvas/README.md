@@ -125,7 +125,7 @@ const context = canvas.getContext('2d');
 - `context.moveTo(x, y)`：将一个新的子路径的起始点移动到 `(x，y)` 坐标的方法。
 - `context.lineTo(x, y)`：使用直线连接子路径的终点到 `(x，y)` 坐标的方法（并不会真正地绘制）。
 - `context.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)`：绘制三次贝赛尔曲线路径的方法。 该方法需要三个点。 第一、第二个点是控制点，第三个点是结束点。起始点是当前路径的最后一个点，绘制贝赛尔曲线前，可以通过调用 `moveTo()` 进行修改。
-- `context.quadraticCurveTo()`：绘制二次贝塞尔曲线路径的方法。它需要2个点。 第一个点是控制点，第二个点是终点。 起始点是当前路径最新的点，当创建二次贝赛尔曲线之前，可以使用 `moveTo()` 方法进行改变。
+- `context.quadraticCurveTo(cpx, cpy, x, y)`：绘制二次贝塞尔曲线路径的方法。它需要2个点。 第一个点是控制点，第二个点是终点。 起始点是当前路径最新的点，当创建二次贝赛尔曲线之前，可以使用 `moveTo()` 方法进行改变。
 - `context.arc(x, y, radius, startAngle, endAngle, anticlockwise)`：绘制圆弧路径的方法。 圆弧路径的圆心在 `(x, y)` 位置，半径为 r ，根据 `anticlockwise` （默认为顺时针，false）指定的方向从 `startAngle` 开始绘制，到 `endAngle` 结束。
 - `context.arcTo(x1, y1, x2, y2, radius)`：根据控制点和半径绘制圆弧路径，使用当前的描点(前一个moveTo或lineTo等函数的止点)。根据当前描点与给定的控制点1连接的直线，和控制点1与控制点2连接的直线，作为使用指定半径的圆的切线，画出两条切线之间的弧线路径。
 - `context.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise)`：添加椭圆路径的方法。椭圆的圆心在`(x,y)`位置，半径分别是 `radiusX` 和 `radiusY` ，`rotation` 是椭圆的旋转角度，以弧度表示(非角度度数)， 按照 `anticlockwise`（默认顺时针）指定的方向，从 startAngle  开始绘制，到 endAngle 结束。
