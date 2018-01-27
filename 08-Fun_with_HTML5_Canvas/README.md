@@ -96,7 +96,7 @@ const context = canvas.getContext('2d');
 
 文本样式：
 - `context.font`：设置当前字体样式的属性。与 css font 规范相同。默认为 `10 px sans-serif`。
-- `context.textAlign`：设置当前文本对齐方式的属性。注意，该对齐是基于 `context.fillText` 方法的x的值。所以如果 textAlign="center"，那么该文本将画在 x-50%*width。可选值为 `left | right | start | end | center`。
+- `context.textAlign`：设置当前文本对齐方式的属性。默认值是 `start`。注意，该对齐是基于 `context.fillText` 方法的x的值。所以如果 textAlign="center"，那么该文本将画在 x-50%*width。可选值为 `left | right | start | end | center`。
 - `context.textBaseline`：设置当前文本基线的属性，即决定文字垂直方向上的对其方式。默认为 `alphabetic`。可选值为： `top | hanging | middle | alphabetic | ideographic | bottom`。
 - `context.direction`：设置当前文字方向的属性。默认为 `inherit`。可选值为： `ltr | rtl | inherit`。
 
