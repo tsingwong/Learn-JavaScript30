@@ -138,10 +138,12 @@
     </div>
 
     <script>
+        // 节流函数
         function debounce(func, wait = 20, immediate = true) {
             var timeout;
             return function () {
                 var context = this,
+                    // 这里获取到的是 Event
                     args = arguments;
                 var later = function () {
                     timeout = null;
@@ -161,9 +163,17 @@
                 // 图片一半的时候高度
                 const windowHeight = (window.scrollY + window.innerHeight) - element.height / 2;
                 // 图片底部的高度
-                const slideHeight = element.offsetTop + element.height;
+                const imageBottom = element.offsetTop + element.height;
+                // 屏幕是否滚动到图片一半位置
                 const isHalfShown = windowHeight > element.offsetTop;
-                console.log(windowHeight, slideHeight);
+                // 屏幕是否滚动到图片底部位置
+                const isNotScrollPast = window.scrollY < imageBottom;
+
+                if (isHalfShown && isNotScrollPast) {
+                    element.classList.add('active');
+                } else {
+                    element.classList.remove('active');
+                }
             });
         }
 
