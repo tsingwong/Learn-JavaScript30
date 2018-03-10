@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>JS Reference VS Copy</title>
+</head>
+
+<body>
+
+    <script>
+        // start with strings, numbers and booleans
+        let str1 = 'tsingwong';
+        let str2 = str1;
+        console.log(`Before the change： ${str1}, ${str2}`);
+        str2 = 'wangqing';
+        console.log(`After the change： ${str1}, ${str2}`);
+        let num1 = 123;
+        let num2 = num1;
+        console.log(`Before the change： ${num1}, ${num2}`);
+        num2 = 456;
+        console.log(`After the change： ${num1}, ${num2}`);
+        let bool1 = true;
+        let bool2 = bool1;
+        console.log(`Before the change： ${bool1}, ${bool2}`);
+        bool2 = false;
+        console.log(`After the change： ${bool1}, ${bool2}`);
+
+        // Let's say we have an array
+        const players = ['Wes', 'Sarah', 'Ryan', 'Poppy'];
+
+        // and we want to make a copy of it.
+        const team = players;
+        console.log(team, players);
+
+        // You might think we can just do something like this:
+        team[4] = 'Tsing';
+        console.log(team, players);
+
+        // however what happens when we update that array?
+
+        // now here is the problem!
+
+        // oh no - we have edited the original array too!
+
+        // Why? It's because that is an array reference, not an array copy. They both point to the same array!
+
+        // So, how do we fix this? We take a copy instead!
+        const team2 = players.slice();
+
+        // one way
+
+        // or create a new array and concat the old one in
+
+        // [].concat(players);
+        const team3 = players.concat();
+
+        // or use the new ES6 Spread
+        const team4 = [...players];
+        const team5 = Array.from(players);
+
+        // now when we update it, the original one isn't changed
+
+        team[5] = 'Wong';
+        console.log(team, team2, team3, team4, team5);
+
+        // The same thing goes for objects, let's say we have a person object
+
+        // with Objects
+        const person = {
+            name: 'Wes Bos',
+            age: 80
+        };
+
+        // and think we make a copy:
+        const captain = person;
+        captain.number = 99;
+        console.log(person, captain);
+
+        // how do we take a copy instead?
+        const captain2 = Object.assign({}, person);
+        captain2.number = 66;
+        console.log(person, captain, captain2);
+
+        // We will hopefully soon see the object ...spread
+        const captain3 = { ...person };
+        captain3.number = 88;
+        captain3.age = 25;
+        console.log(person, captain, captain2, captain3);
+
+        // Things to note - this is only 1 level deep - both for Arrays and Objects. lodash has a cloneDeep method, but you should think twice before using it.
+
+        const obj = {
+            name: 'tsingwong',
+            age: 25,
+            social: {
+                weibo: 'Tsingwong',
+                facebook: 'tsingwong'
+            }
+        };
+
+        // 浅拷贝
+        const dev = Object.assign({}, obj);
+
+        const dev2 = JSON.parse(JSON.stringify(obj));
+
+        console.clear();
+
+        function deepClone(obj, output = {}) {
+            Object.entries(obj)
+                .forEach(([key, value]) => {
+                    console.log(key, value);
+                    if (Object.prototype.toString.call(value) === '[object Object]' && (Object.keys(value)
+                            .length !== 0)) {
+                        output[key] = deepClone(value, {});
+                    } else if (Object.prototype.toString.call(value) === '[object Array]' && value.length !== 0) {
+                        output[key] = deepClone(value, []);
+                    } else {
+                        if (Array.isArray(output)) {
+                            output.push(value);
+                        } else {
+                            output[key] = value;
+                        }
+                    }
+                    console.log(output);
+                });
+            return output;
+        }
+
+        var data = {
+            a: {
+                a1: 1,
+                a5: 5,
+                a8: {
+                    a11: 1,
+                    a22: null,
+                    a33: {
+                        a555: 1,
+                        a666: 'string',
+                        null: null,
+                        undefined: undefined,
+                        array: [],
+                        number: 12
+                    }
+                },
+                a9: [1, null, undefined, {name: 'tsingwong'}]
+            },
+            b: {},
+            c: 123,
+            妹子: '真妹子'
+        };
+
+        console.log(data, deepClone(data));
+
+    </script>
+
+</body>
+
+</html>
