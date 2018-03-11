@@ -109,7 +109,6 @@
         function deepClone(obj, output = {}) {
             Object.entries(obj)
                 .forEach(([key, value]) => {
-                    console.log(key, value);
                     if (Object.prototype.toString.call(value) === '[object Object]' && (Object.keys(value)
                             .length !== 0)) {
                         output[key] = deepClone(value, {});
@@ -122,7 +121,6 @@
                             output[key] = value;
                         }
                     }
-                    console.log(output);
                 });
             return output;
         }
@@ -143,7 +141,7 @@
                         number: 12
                     }
                 },
-                a9: [1, null, undefined, {name: 'tsingwong'}]
+                a9: [1, null, undefined, { name: 'tsingwong' }]
             },
             b: {},
             c: 123,
@@ -151,6 +149,47 @@
         };
 
         console.log(data, deepClone(data));
+
+
+        function isObject(obj) {
+            return Object.prototype.toString.call(obj) === '[object Object]' && Object.keys(obj)
+                .length !== 0;
+        }
+
+        function isArray(obj) {
+            // return Array.isArray(obj) && obj.length !== 0;
+            return Object.prototype.toString.call(obj) === '[object Array]' && obj.length !== 0;
+
+        }
+
+        function deepClone2(obj, output) {
+            if (!(obj instanceof Object)) {
+                return '错误的参数';
+            }
+            if (isObject(obj)) {
+                output = {}
+            } else if (isArray(obj)) {
+                output = [];
+            }
+
+            Object.entries(obj)
+                .forEach(([key, value]) => {
+                    if (isObject(value)) {
+                        output[key] = deepClone2(value, {});
+                    } else if (isArray(value)) {
+                        output[key] = deepClone2(value, []);
+                    } else {
+                        if (Array.isArray(output)) {
+                            output.push(value);
+                        } else {
+                            output[key] = value;
+                        }
+                    }
+                })
+            return output;
+        }
+
+        console.log(data, deepClone2(data));
 
     </script>
 
