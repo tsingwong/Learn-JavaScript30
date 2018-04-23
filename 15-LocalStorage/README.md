@@ -89,5 +89,139 @@ IE 中的事件对象有如下属性和方法
 
 
 
-传统做法中会使用3个事件处理程序，使用事件委托只需要
+传统做法中会使用3个事件处理程序，使用事件委托只需要在 DOM 输中尽量高的层级上添加一个事件处理程序即可：
 
+```js
+let list = document.querySelectorAll('#myList');
+
+list.addElementListener('click', (event) => {
+    let target = event.target;
+    
+    switch(target.id) {
+        case 'doSomeWhere':
+            location.href = 'https://tsingwong.cn';
+            break;
+        case 'doSomeThing':
+            document.title = 'I change the document\'s title';
+            break;
+        case 'sayHi':
+            alert('Hi');
+            break;
+    }
+})
+```
+
+##### 对象解构赋值
+
+解构赋值是 ES6 中新增的特性。
+
+对象解构中属性没有次序，变量必须与属性同名，才能取到值。
+
+```js
+let {foo, bar} = {foo: 'aaa', bar: 'bbb'};
+let {foo, bar, test} = {foo: 'aaa', bar: 'bbb'};// test  undefined
+```
+
+如果变量名和属性不一致，必须写成下面格式。
+
+```js
+let {foo: baz, bar: fob} = {foo: 'aaa', bar: 'bbb'}; // baz 'aaa' fob 'bbb'
+```
+
+##### Web 存储机制
+
+Web Storage 的目的是克服由 cookie 带来的限制，当数据需要被严格控制在客户端时，无需持续地将数据发回服务器端。两个目标：
+
+1.  提供一种在 cookie 之外存储会话数据的途径；
+2.  提供一种存储大量可以跨平台存在的数据机制。
+
+Storage 类型的实例方法：
+
+-   `clear()`：删除所有值
+-   `getItem(name)`：根据指定的名字 `name` 来获取对应的值
+-   `key(index)`：获取 index 位置的值的名字
+-   `remove(name)`：删除指定名字 `name` 对应的名值对
+-   `setItem(name, value)`：为指定的 `name` 设置对应的值
+
+**注：Storage 类型只能存储字符串，非字符串的数据在储存之前会被强制转换成字符串。**
+
+
+
+sessionStorage 对象，存储特定某个会话的数据，即该数据只会保持到浏览器关闭。存储在 sessionStorage 中的数据可以跨越页面刷新而存在。
+
+
+
+localStorage对象，作为持久保存客户端数据的 storage 对象。要访问同一个 localStorage 必须保证来自通过一个域名、同一种协议、同一个端口。
+
+存储在 localStorage 对象中的数据保留到开发者通过 JavaScript 删除或者用户主动清除浏览器缓存。
+
+
+
+storage 事件，对于 storage 对象进行修改，会在文档上触发 storage 事件。该 Event 对象有以下属性:
+
+-   `domian`：发生变化的存储空间的域名
+-   `key`：设置或删除的键名
+-   `newValue`：设置新键值对时，是新值；删除时，为 null
+-   `oldValue`： 键被更改之前的值
+
+
+
+JSON 的语法有三种基本类型的值：
+
+-   简单值：字符串、数值、布尔值、null，注并不支持 undefined；
+-   对象：无序的键值对，值可以是简单值，也可以是复杂的数据数据类型的值；
+-   数组：有序的值列表，值可以是简单值，也可以是复杂的数据数据类型的值。
+
+除了这三种类型外，变量、函数、对象实例 JSON 一概不支持。
+
+注：这里的不支持 undefined，并不是 JSON 中不能使用 undefined。
+
+```js
+let a = {name:'tsingwong', age:25};
+let b = {test: undefined};
+console.log(JSON.stringify(a)); // "{"name":"tsingwong","age":25}"
+console.log(JSON.stringify(b)); // "{}"
+```
+
+JSON 对象，有两个方法：`stringify()` 和 `parse()`，其作用分别是将 JavaScript 对象序列化为 JSON 字符串和把 JSON 字符串解析为原生 JavaScript 值。
+
+解析过程中会跳过值为 `undefined` 的属性。
+
+注：两个方法常用于对象或数组的深拷贝。
+
+
+
+`JSON.stringify()` 可接受三个参数，需要序列化的 JavaScript 对象、过滤器、缩进格式。
+
+过滤器设置如果是数组，结果中将只包含数组中列出的属性。如果是是函数（常被成为replacer），函数接受两个参数分别是属性名和属性值，根据属性名可以知道该如何处理序列化之后的对象中的属性。
+
+缩进格式是用于控制结果中的缩进和空白符，如果这个参数是一个数字，那么它表示的是每个级别的缩进空格数。如果是字符串，那么这个字符串将会出现在 JSON 字符串中被当做是缩进字符。需要注意的是最大缩进的长度是 10，所以最大缩进数字是 10，最长的缩进字符串也是10个字符、
+
+
+
+另外在对象中存在一种 `toJSON()` 方法：
+
+```js
+let tsingwong = {
+    name: 'tsingwong',
+    age: 25,
+    year: 1993,
+    toJSON: function () {
+        return `${this.name}.${this.age}`;
+    }
+};
+console.log(JSON.stringify(tsingwong)); // "tsingwong.25"
+```
+
+
+
+序列化内部顺序，如将一个对象传入 `JSON.stringify()` ，序列化顺序如下：
+
+1.  如果对象中存在 `toJSON()`方法且能通过它取得有效值，即调用方法并返回结果，否则返回对象本身；
+2.  如果提供了第二个参数，应用函数过滤器。传入函数过滤器的值是第一步返回的值。
+3.  对于第二步返回的每个值进行相应的序列化。
+4.  如果提供第三个参数，执行相应的格式化。
+
+
+
+与 `JSON.stringify()` 类似 `JSON.parse()` 同样也可以接受另一个参数，该参数为函数（与 replacer 相对应，常被称为 reviver），将在每个键值对上调用，实际上 replacer 与 reviver 两个函数的签名是相同的，他们都接受两个参数，一个键和一个值，且都会返回一个值。
