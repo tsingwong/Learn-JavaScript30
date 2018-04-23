@@ -22,7 +22,7 @@ DOM 事件流（一般来说是 DOM2级事件流）规定事件流有三个阶�
 
 
 
-DOM 中的事件对象如下属性
+DOM 中的事件对象有如下属性和方法
 
 | 属性/方法                  | 类型         | 说明                                                         |
 | -------------------------- | ------------ | ------------------------------------------------------------ |
@@ -32,9 +32,9 @@ DOM 中的事件对象如下属性
 | defaultPrevented           | Boolean      | 只读，为 true 表示已经调用 preventDefault()方法              |
 | detail                     | Integer      | 只读，与事件相关的细节信息                                   |
 | eventPhase                 | Integer      | 只读，调用事件处理程序的阶段，1捕获，2处于目标，3冒泡        |
-| preventDefault()           | Function     | 取消事件的默认行为，当 `cancelable` 为 true ，才可用         |
-| stopImmediatePropagation() | Function     | 取消事件的进一步冒泡或捕获，同时阻止任何事件处理程序被调用   |
-| stopPropagation            | Function     | 取消事件的进一步捕获或冒泡，当 `bubbles`是 true，才可用      |
+| preventDefault()           | Function     | 只读，取消事件的默认行为，当 `cancelable` 为 true ，才可用   |
+| stopImmediatePropagation() | Function     | 只读，取消事件的进一步冒泡或捕获，同时阻止任何事件处理程序被调用 |
+| stopPropagation            | Function     | 只读取消事件的进一步捕获或冒泡，当 `bubbles`是 true，才可用  |
 | target                     | Element      | 只读，事件的目标                                             |
 | trusted                    | Boolean      | 只读，为 true 时表示事件是浏览器生成的，false 表示是事件时有开发人员通过js创建的 |
 | type                       | String       | 只读，被触发的事件类型                                       |
@@ -43,3 +43,51 @@ DOM 中的事件对象如下属性
 
 
 在事件处理程序的内部，对象中的 `this` 始终指向 `currentTarget`。
+
+
+
+IE 中的事件对象有如下属性和方法
+
+| 属性/方法    | 类型    | 说明                                                  |
+| ------------ | ------- | ----------------------------------------------------- |
+| cancelBubble | Boolean | 读写，默认为 false，设置为 true 时可取消事件冒泡      |
+| returnValue  | Boolean | 读写，默认为true，设置为 false 时可以取消事件默认行为 |
+| srcElement   | Element | 只读，事件的目标                                      |
+| type         | String  | 只读，被触发的事件类型                                |
+
+
+
+事件类型有以下几类：
+
+1.  UI事件，当用户与页面的元素交互时触发
+2.  焦点事件，当元素获取或失去焦点时触发
+3.  鼠标事件，当用户通过鼠标在页面上执行操作时触发
+4.  滚轮事件，当使用鼠标或其他设备滚轮时触发
+5.  文本事件，当在文档中输入文本时触发
+6.  键盘事件，当用户通过键盘在页面上执行操作时触发
+7.  合成事件，当 IME(Input Method Editor，输入法编辑器)输入字符时触发
+8.  变动事件，当底层 DOM 结构发生变化时触发
+9.  ~~变动名称事件，当元素或属性名变动时触发~~（已废弃）
+
+
+
+##### 事件委托
+
+对于 **事件处理程序过多** 问题的最佳实践就是事件委托。
+
+事件委托就是利用事件冒泡，只指定一个事件处理程序，就可以管理某一类型的所有事件。
+
+
+
+```html
+<ul id="myList">
+    <li id="goSomeWhere">Go Some Where</li>
+    <li id="doSomeThing">Do Some Thing</li>
+    <li id="sayHi">Say Hi</li>
+</ul>
+```
+
+
+
+传统做法中会使用3个事件处理程序，使用事件委托只需要
+
