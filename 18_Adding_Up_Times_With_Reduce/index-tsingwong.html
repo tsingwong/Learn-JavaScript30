@@ -186,7 +186,7 @@
     <script>
         const list = document.querySelectorAll('.videos li');
         let times = [...list].reduce((prev, curr, index, arr) => {
-            let [mins, secs] = curr.dataset.time.split(':').map((item) => item.trim()).map(parseFloat);
+            let [mins, secs] = curr.dataset.time.split(':').map((item) => item.trim()).map((i) => parseInt(i, 10));
             return prev + (mins * 60) + secs;
         }, 0);
         console.log(times);
