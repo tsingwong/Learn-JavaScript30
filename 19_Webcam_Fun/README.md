@@ -2,6 +2,7 @@
 
 - `window.navigator`对象
 - `canvas` 方法
+- 三原色
 
 
 ### window.navigator
@@ -26,4 +27,5 @@
 - `Navigator.product`：返回当前浏览器的产品名称；
 - `Navigator.userAgent`：返回当前浏览器的用户代理字符串；
 - `Navigator.serviceWorker`：返回关联文件的 `ServiceWorkerContainer` 对象，提供了对 ServiceWorker 的注册、删除、升级和通信的访问。
+
 
